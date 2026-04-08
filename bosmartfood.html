@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartFood - Back Office Nutrition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="admin-body">
+
+    <div class="dashboard-container">
+        <nav class="sidebar admin-sidebar">
+            <div class="logo">Smart<span>Food</span><br><small>Espace Nutritionniste</small></div>
+            <ul class="nav-links">
+                <li><a href="#">Retour au Front Office</a></li>
+                <li class="active"><a href="#">🥑 Base de données Ingrédients</a></li>
+                <li><a href="#">⚙️ Validation Recettes</a></li>
+            </ul>
+        </nav>
+
+        <main class="main-content">
+            
+            <header class="admin-header nutrition-header">
+                <div>
+                    <h1>⚙️ Gestion de la Base de Données (Nutrition)</h1>
+                    <p>Gérez les ingrédients et leurs valeurs nutritionnelles pour le calculateur utilisateur.</p>
+                </div>
+            </header>
+
+            <section class="card">
+                <h3>Ajouter un Nouvel Ingrédient (Valeurs pour 100g)</h3>
+                
+                <form id="admin-add-food" novalidate>
+                    <div class="form-grid db-grid">
+                        <div class="input-group">
+                            <label for="food_name">Nom de l'aliment</label>
+                            <input type="text" id="food_name" name="food_name" placeholder="Ex: Riz Basmati">
+                        </div>
+                        <div class="input-group">
+                            <label for="food_cals">Cals (kcal)</label>
+                            <input type="text" id="food_cals" name="food_cals" placeholder="130">
+                        </div>
+                        <div class="input-group">
+                            <label for="food_prot">Prot (g)</label>
+                            <input type="text" id="food_prot" name="food_prot" placeholder="2.7">
+                        </div>
+                        <div class="input-group">
+                            <label for="food_carbs">Gluc (g)</label>
+                            <input type="text" id="food_carbs" name="food_carbs" placeholder="28">
+                        </div>
+                        <div class="input-group">
+                            <label for="food_fat">Lip (g)</label>
+                            <input type="text" id="food_fat" name="food_fat" placeholder="0.3">
+                        </div>
+                        <div class="input-group btn-container">
+    
+                            <button type="button" id="btn-submit-ingredient" class="btn-primary align-bottom-btn">+ Ajouter à la base</button>
+                        </div>
+                    </div>
+                </form>
+            </section>
+
+            <section class="card">
+                <div class="card-header-flex db-table-header">
+                    <h3>Ingrédients disponibles dans le Front Office</h3>
+                    <span class="badge-status">Total: 3 Ingrédients</span>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="smart-table">
+                        <thead>
+                            <tr>
+                                <th>ID DB</th>
+                                <th>Aliment</th>
+                                <th>Calories (100g)</th>
+                                <th>Protéines (100g)</th>
+                                <th>Glucides (100g)</th>
+                                <th>Lipides (100g)</th>
+                                <th>Actions Admin</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="db-id">#1</td>
+                                <td><strong>Escalope de Poulet</strong></td>
+                                <td>165 kcal</td>
+                                <td>31.0 g</td>
+                                <td>0.0 g</td>
+                                <td>3.6 g</td>
+                                <td class="actions">
+                                    <button class="btn-edit" title="Modifier cet ingrédient">✏️ Modifier</button>
+                                    <button class="btn-delete" title="Retirer de la base de données">🗑️ Supprimer</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="db-id">#2</td>
+                                <td><strong>Pâtes Complètes</strong></td>
+                                <td>131 kcal</td>
+                                <td>5.0 g</td>
+                                <td>25.0 g</td>
+                                <td>1.1 g</td>
+                                <td class="actions">
+                                    <button class="btn-edit">✏️ Modifier</button>
+                                    <button class="btn-delete">🗑️ Supprimer</button>
+                                </td>
+                            </tr>
+                             <tr>
+                                <td class="db-id">#3</td>
+                                <td><strong>Sauce Tomate</strong></td>
+                                <td>40 kcal</td>
+                                <td>1.5 g</td>
+                                <td>8.0 g</td>
+                                <td>0.2 g</td>
+                                <td class="actions">
+                                    <button class="btn-edit">✏️ Modifier</button>
+                                    <button class="btn-delete">🗑️ Supprimer</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+</body>
+</html>
