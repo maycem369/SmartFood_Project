@@ -353,3 +353,81 @@ input:focus, select:focus {
         grid-template-columns: 1fr;
     }
 }
+
+/* =====
+   VALIDATION & ALERTS (JavaScript contrôle de saisie)
+   ===== */
+
+.error-msg {
+    color: #e74c3c;
+    font-size: 0.8rem;
+    margin-top: 5px;
+    display: none;
+    font-weight: 500;
+}
+
+.alert {
+    padding: 14px 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    animation: slideDown 0.4s ease;
+}
+
+.alert-success {
+    background-color: #E9F5EF;
+    color: var(--smart-green);
+    border-left: 4px solid var(--smart-green);
+}
+
+.alert-error {
+    background-color: #FFEBEE;
+    color: #c0392b;
+    border-left: 4px solid #e74c3c;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Boutons liens (a stylisés comme boutons) */
+a.btn-edit, a.btn-delete {
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.85rem;
+}
+
+/* Card header flex */
+.card-header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Sidebar small text */
+.sidebar small {
+    font-size: 0.7rem;
+    opacity: 0.7;
+    font-weight: 400;
+}
+
+/* Admin link style */
+.admin-link {
+    color: var(--smart-orange) !important;
+    font-weight: 600 !important;
+}
+
+.switch-mode {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,0.2);
+}
