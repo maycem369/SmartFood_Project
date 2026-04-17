@@ -1,88 +1,50 @@
 <?php
 // model/Nutrition.php — Modèle OOP pour l'entité Nutrition
-require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../config/config.php';
 
 class Nutrition {
-    private $idNutrition;
-    private $idIngredient;
-    private $poids; // "poid" in diagram
-    private $calories;
-    private $proteines;
-    private $glucides;
-    private $lipides;
-
-    private $db;
+    private ?int $idNutrition = null;
+    private int $idIngredient;
+    private float $poids; 
+    private float $calories;
+    private float $proteines;
+    private float $glucides;
+    private float $lipides;
 
     public function __construct() {
-        $this->db = Database::getInstance()->getConnection();
-        $this->poids = 100; // Par défaut à 100g comme demandé
+        $this->poids = 100.0; // Par défaut à 100g
     }
 
     // ========================
     // GETTERS & SETTERS
     // ========================
 
-    public function getIdNutrition() { return $this->idNutrition; }
-    public function setIdNutrition($id) { $this->idNutrition = $id; }
+    public function getIdNutrition(): ?int { return $this->idNutrition; }
+    public function setIdNutrition(?int $id): void { $this->idNutrition = $id; }
 
-    public function getIdIngredient() { return $this->idIngredient; }
-    public function setIdIngredient($id) { $this->idIngredient = $id; }
+    public function getIdIngredient(): int { return $this->idIngredient; }
+    public function setIdIngredient(int $id): void { $this->idIngredient = $id; }
 
-    public function getPoids() { return $this->poids; }
-    public function setPoids($poids) { $this->poids = $poids; }
+    public function getPoids(): float { return $this->poids; }
+    public function setPoids(float $poids): void { $this->poids = $poids; }
 
-    public function getCalories() { return $this->calories; }
-    public function setCalories($calories) { $this->calories = $calories; }
+    public function getCalories(): float { return $this->calories; }
+    public function setCalories(float $calories): void { $this->calories = $calories; }
 
-    public function getProteines() { return $this->proteines; }
-    public function setProteines($proteines) { $this->proteines = $proteines; }
+    public function getProteines(): float { return $this->proteines; }
+    public function setProteines(float $proteines): void { $this->proteines = $proteines; }
 
-    public function getGlucides() { return $this->glucides; }
-    public function setGlucides($glucides) { $this->glucides = $glucides; }
+    public function getGlucides(): float { return $this->glucides; }
+    public function setGlucides(float $glucides): void { $this->glucides = $glucides; }
 
-    public function getLipides() { return $this->lipides; }
-    public function setLipides($lipides) { $this->lipides = $lipides; }
-
-    // ========================
-    // MÉTHODES CRUD
-    // ========================
-
-    public function addNutrition($nutrition) {
-        $sql = "INSERT INTO nutrition (idIngredient, poids, calories, proteines, glucides, lipides) 
-                VALUES (:idIngredient, :poids, :calories, :proteines, :glucides, :lipides)";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindValue(':idIngredient', $nutrition->getIdIngredient());
-        $stmt->bindValue(':poids', $nutrition->getPoids());
-        $stmt->bindValue(':calories', $nutrition->getCalories());
-        $stmt->bindValue(':proteines', $nutrition->getProteines());
-        $stmt->bindValue(':glucides', $nutrition->getGlucides());
-        $stmt->bindValue(':lipides', $nutrition->getLipides());
-        return $stmt->execute();
-    }
-
-    public function updateNutrition($nutrition) {
-        $sql = "UPDATE nutrition 
-                SET poids = :poids, calories = :calories, proteines = :proteines, 
-                    glucides = :glucides, lipides = :lipides 
-                WHERE idIngredient = :idIngredient";
-        $stmt = $this->db->prepare($sql);
-        $stmt->bindValue(':idIngredient', $nutrition->getIdIngredient());
-        $stmt->bindValue(':poids', $nutrition->getPoids());
-        $stmt->bindValue(':calories', $nutrition->getCalories());
-        $stmt->bindValue(':proteines', $nutrition->getProteines());
-        $stmt->bindValue(':glucides', $nutrition->getGlucides());
-        $stmt->bindValue(':lipides', $nutrition->getLipides());
-        return $stmt->execute();
-    }
+    public function getLipides(): float { return $this->lipides; }
+    public function setLipides(float $lipides): void { $this->lipides = $lipides; }
 
     // ========================
-    // MÉTHODES SPÉCIFIQUES (Diagramme)
+    // MÉTHODES SPÉCIFIQUES
     // ========================
 
-    /**
-     * Calculer les nutrition pour un poids personnalisé
-     */
-    public function calculNutrition($customPoids) {
+    public function calculNutrition(float $customPoids): array {
         $ratio = $customPoids / $this->poids;
         return [
             'calories' => round($this->calories * $ratio, 1),
@@ -92,10 +54,7 @@ class Nutrition {
         ];
     }
 
-    /**
-     * Retourne une chaîne formatée pour l'affichage
-     */
-    public function afficherValeurs() {
+    public function afficherValeurs(): string {
         return "{$this->calories} kcal | P: {$this->proteines}g | G: {$this->glucides}g | L: {$this->lipides}g (pour {$this->poids}g)";
     }
 }

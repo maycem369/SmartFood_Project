@@ -1,6 +1,6 @@
 <?php
 // backoffice/edit.php — Vue Back Office: Modifier un Ingrédient
-require_once __DIR__ . '/../../model/Ingredient.php';
+require_once __DIR__ . '/../../controller/IngredientController.php';
 
 // Vérifier qu'un ID est passé
 if (!isset($_GET['id']) || empty($_GET['id'])) {
@@ -9,8 +9,8 @@ if (!isset($_GET['id']) || empty($_GET['id'])) {
 }
 
 $id = intval($_GET['id']);
-$ingredientModel = new Ingredient();
-$ing = $ingredientModel->getIngredientById($id);
+$ctrl = new IngredientController();
+$ing = $ctrl->getIngredientById($id);
 
 // Si l'ingrédient n'existe pas
 if (!$ing) {
@@ -25,7 +25,7 @@ if (!$ing) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartFood - Modifier Ingrédient</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 <body class="admin-body">
 
@@ -63,11 +63,6 @@ if (!$ing) {
                             <span class="error-msg" id="error-nom"></span>
                         </div>
                         <div class="input-group">
-                            <label for="food_qty">Quantité</label>
-                            <input type="text" id="food_qty" name="quantite" value="<?php echo $ing['quantite']; ?>">
-                            <span class="error-msg" id="error-quantite"></span>
-                        </div>
-                        <div class="input-group">
                             <label for="food_cals">Cals (pour 100g)</label>
                             <input type="text" id="food_cals" name="calories" value="<?php echo $ing['calories']; ?>">
                             <span class="error-msg" id="error-calories"></span>
@@ -100,7 +95,7 @@ if (!$ing) {
         </main>
     </div>
 
-    <script src="../../js/validation.js"></script>
+    <script src="../js/validation.js"></script>
     <script>
         // Attacher la validation au formulaire de modification
         document.getElementById('edit-ingredient-form').addEventListener('submit', function(e) {

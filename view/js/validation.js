@@ -80,7 +80,7 @@ function validateIngredientForm(form) {
         showError('error-nom', 'Le nom de l\'aliment est obligatoire.');
         isValid = false;
     } else if (nom.length < 2) {
-        showError('error-nom', 'Le nom doit contenir au moins 2 caractères.');
+        showError('error-nom', 'Le nom debe contenir au moins 2 caractères.');
         isValid = false;
     } else if (!/^[a-zA-ZÀ-ÿ\s'-]+$/.test(nom)) {
         showError('error-nom', 'Le nom ne doit contenir que des lettres et espaces.');

@@ -1,10 +1,10 @@
 <?php
 // backoffice/index.php — Vue Back Office: CRUD Ingrédients
-require_once __DIR__ . '/../../model/Ingredient.php';
+require_once __DIR__ . '/../../controller/IngredientController.php';
 
-// Récupérer tous les ingrédients depuis la base de données
-$ingredientModel = new Ingredient();
-$ingredients = $ingredientModel->getAllIngredients();
+// Récupérer tous les ingrédients via le contrôleur
+$ctrl = new IngredientController();
+$ingredients = $ctrl->listIngredients();
 $totalIngredients = count($ingredients);
 
 // Messages de succès/erreur
@@ -28,7 +28,7 @@ if (isset($_GET['error'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartFood - Back Office Nutrition</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 <body class="admin-body">
 
@@ -72,11 +72,6 @@ if (isset($_GET['error'])) {
                             <span class="error-msg" id="error-nom"></span>
                         </div>
                         <div class="input-group">
-                            <label for="food_qty">Quantité</label>
-                            <input type="text" id="food_qty" name="quantite" placeholder="1" value="1">
-                            <span class="error-msg" id="error-quantite"></span>
-                        </div>
-                        <div class="input-group">
                             <label for="food_cals">Cals (pour 100g)</label>
                             <input type="text" id="food_cals" name="calories" placeholder="130">
                             <span class="error-msg" id="error-calories"></span>
@@ -116,7 +111,6 @@ if (isset($_GET['error'])) {
                             <tr>
                                 <th>ID DB</th>
                                 <th>Aliment</th>
-                                <th>Quantité</th>
                                 <th>Cals (100g)</th>
                                 <th>Prot (100g)</th>
                                 <th>Gluc (100g)</th>
@@ -136,7 +130,6 @@ if (isset($_GET['error'])) {
                                 <tr id="row-<?php echo $ing['idIngredient']; ?>">
                                     <td class="db-id">#<?php echo $ing['idIngredient']; ?></td>
                                     <td><strong><?php echo htmlspecialchars($ing['nom']); ?></strong></td>
-                                    <td><?php echo $ing['quantite']; ?></td>
                                     <td><?php echo $ing['calories']; ?> kcal</td>
                                     <td><?php echo $ing['proteines']; ?> g</td>
                                     <td><?php echo $ing['glucides']; ?> g</td>
@@ -160,7 +153,7 @@ if (isset($_GET['error'])) {
         </main>
     </div>
 
-    <script src="../../js/validation.js"></script>
+    <script src="../js/validation.js"></script>
     <script>
         // Attacher la validation au formulaire d'ajout
         document.getElementById('admin-add-food').addEventListener('submit', function(e) {
