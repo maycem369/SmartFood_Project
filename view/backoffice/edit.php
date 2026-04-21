@@ -2,6 +2,8 @@
 // backoffice/edit.php — Vue Back Office: Modifier un Ingrédient
 require_once __DIR__ . '/../../controller/IngredientController.php';
 
+session_start();
+
 // Vérifier qu'un ID est passé
 if (!isset($_GET['id']) || empty($_GET['id'])) {
     header('Location: index.php?error=no_id');
@@ -16,6 +18,13 @@ $ing = $ctrl->getIngredientById($id);
 if (!$ing) {
     header('Location: index.php?error=not_found');
     exit();
+}
+
+// Récupérer les erreurs de validation PHP pour la 2ème entité (Nutrition)
+$errors = [];
+if (isset($_SESSION['nutrition_errors'])) {
+    $errors = $_SESSION['nutrition_errors'];
+    unset($_SESSION['nutrition_errors']);
 }
 ?>
 <!DOCTYPE html>
@@ -52,38 +61,42 @@ if (!$ing) {
             <section class="card">
                 <h3>Modifier les informations (Valeurs pour 100g)</h3>
                 
-                <form id="edit-ingredient-form" action="../../controller/IngredientController.php?action=update" method="POST" novalidate>
-                    <!-- ID caché -->
-                    <input type="hidden" name="idIngredient" value="<?php echo $ing['idIngredient']; ?>">
+                <?php if (!empty($errors)): ?>
+                    <div style="background: rgba(255, 59, 59, 0.1); border-left: 4px solid #ff3b3b; padding: 15px; margin-bottom: 20px; border-radius: 4px; color: #ff3b3b;">
+                        <strong>Erreurs de validation serveur (PHP) :</strong><br>
+                        <?php foreach ($errors as $error): ?>
+                            • <?php echo htmlspecialchars($error); ?><br>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+
+                <form id="edit-ingredient-form" action="../../controller/NutritionController.php?action=update" method="POST" novalidate>
+                    <!-- ID Caché pour Nutrition -->
+                    <input type="hidden" name="idNutrition" value="<?php echo $ing['idNutrition'] ?? $ing['idIngredient']; ?>">
                     
                     <div class="form-grid db-grid">
                         <div class="input-group">
-                            <label for="food_name">Nom de l'aliment</label>
-                            <input type="text" id="food_name" name="nom" value="<?php echo htmlspecialchars($ing['nom']); ?>">
-                            <span class="error-msg" id="error-nom"></span>
+                            <label for="food_name">Nom de l'aliment (Lecture seule)</label>
+                            <input type="text" id="food_name" name="nom" value="<?php echo htmlspecialchars($ing['nom']); ?>" readonly style="background: #f4f4f4; cursor: not-allowed;">
                         </div>
                         <div class="input-group">
-                            <label for="food_cals">Cals (pour 100g)</label>
+                            <label for="food_cals">Cals (kcal)</label>
                             <input type="text" id="food_cals" name="calories" value="<?php echo $ing['calories']; ?>">
-                            <span class="error-msg" id="error-calories"></span>
                         </div>
                         <div class="input-group">
-                            <label for="food_prot">Prot (g/100g)</label>
+                            <label for="food_prot">Prot (g)</label>
                             <input type="text" id="food_prot" name="proteines" value="<?php echo $ing['proteines']; ?>">
-                            <span class="error-msg" id="error-proteines"></span>
                         </div>
                         <div class="input-group">
-                            <label for="food_carbs">Gluc (g/100g)</label>
+                            <label for="food_carbs">Gluc (g)</label>
                             <input type="text" id="food_carbs" name="glucides" value="<?php echo $ing['glucides']; ?>">
-                            <span class="error-msg" id="error-glucides"></span>
                         </div>
                         <div class="input-group">
-                            <label for="food_fat">Lip (g/100g)</label>
+                            <label for="food_fat">Lip (g)</label>
                             <input type="text" id="food_fat" name="lipides" value="<?php echo $ing['lipides']; ?>">
-                            <span class="error-msg" id="error-lipides"></span>
                         </div>
                         <div class="input-group btn-container">
-                            <button type="submit" class="btn-primary align-bottom-btn">💾 Sauvegarder</button>
+                            <button type="submit" class="btn-primary align-bottom-btn">💾 Sauvegarder (Test PHP)</button>
                         </div>
                     </div>
                 </form>
