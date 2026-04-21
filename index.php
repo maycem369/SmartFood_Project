@@ -1,30 +1,25 @@
 <?php
-// =============================================
-// index.php - Front Controller (MVC)
-// =============================================
-
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
-
 session_start();
 
 require_once 'config/Database.php';
 require_once 'controllers/UserController.php';
+require_once 'controllers/ProfilController.php';
+require_once 'controllers/AdminController.php';
 
-$controller = new UserController();
+$userController = new UserController();
+$profilController = new ProfilController();
+$adminController = new AdminController();
+
 $action = $_GET['action'] ?? 'login';
 
 switch ($action) {
-
-    // ===================== FRONT OFFICE =====================
-    case 'register':
-        $controller->register();
-        break;
-
-    case 'login':
-        $controller->login();
-        break;
-
+    // Front Office
+    case 'register': $userController->register(); break;
+    case 'login': $userController->login(); break;
+    case 'forgot_password': $userController->forgotPassword(); break;
+    case 'reset_password': $userController->resetPassword(); break;
     case 'dashboard_user':
         if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'user') {
             header("Location: index.php?action=login");
@@ -32,23 +27,9 @@ switch ($action) {
         }
         include 'views/Frontoffice/dashboard_user.php';
         break;
-
-    case 'profil':
-        if (!isset($_SESSION['user_id'])) {
-            header("Location: index.php?action=login");
-            exit();
-        }
-        include 'views/Frontoffice/profil.php';
-        break;
-
-    case 'edit_profile':
-        if (!isset($_SESSION['user_id'])) {
-            header("Location: index.php?action=login");
-            exit();
-        }
-        include 'views/Frontoffice/edit_profile.php';
-        break;
-
+    case 'profil': $profilController->showProfil(); break;
+    case 'edit_profile': $profilController->showEditProfil(); break;
+    case 'update_profile': $userController->updateProfile(); break;
     case 'change_password':
         if (!isset($_SESSION['user_id'])) {
             header("Location: index.php?action=login");
@@ -56,70 +37,39 @@ switch ($action) {
         }
         include 'views/Frontoffice/change_password.php';
         break;
-        // Dans index.php, après case 'change_password':
-    case 'update_password':
-    if (!isset($_SESSION['user_id'])) {
-        header("Location: index.php?action=login");
-        exit();
-    }
-    $controller->updatePassword();
-    break;
-
+    case 'update_password': $userController->updatePassword(); break;
     case 'logout':
         session_destroy();
         header("Location: index.php?action=login");
         exit();
-        break;
-
-    // ===================== BACK OFFICE =====================
-    case 'admin_dashboard':
-        if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
-            header("Location: index.php?action=login");
-            exit();
-        }
-        include 'views/Backoffice/dashboard_admin.php';
-        break;
-
+    // Back Office
+    case 'admin_dashboard': $adminController->dashboard(); break;
     case 'users_list':
         if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
             header("Location: index.php?action=login");
             exit();
         }
-        $controller->listUsers();
+        include 'views/Backoffice/users_list.php';
         break;
-
     case 'add_user':
         if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
             header("Location: index.php?action=login");
             exit();
         }
-        $controller->addUser();
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $userController->addUser();
+        } else {
+            include 'views/Backoffice/add_user.php';
+        }
         break;
-
     case 'edit_user':
         if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
             header("Location: index.php?action=login");
             exit();
         }
-        $controller->editUser($_GET['id'] ?? null);
+        include 'views/Backoffice/edit_user.php';
         break;
-
-    case 'update_user':
-        if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
-            header("Location: index.php?action=login");
-            exit();
-        }
-        $controller->updateUser();
-        break;
-
-    case 'delete_user':
-        if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
-            header("Location: index.php?action=login");
-            exit();
-        }
-        $controller->deleteUser($_GET['id'] ?? null);
-        break;
-
+    case 'update_user': $userController->updateUser(); break;
     case 'user_details':
         if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
             header("Location: index.php?action=login");
@@ -127,9 +77,14 @@ switch ($action) {
         }
         include 'views/Backoffice/user_details.php';
         break;
-
-    // Page par défaut
-    default:
-        include 'views/Frontoffice/login.php';
+    case 'delete_user':
+        if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
+            header("Location: index.php?action=login");
+            exit();
+        }
+        include 'views/Backoffice/delete_user.php';
+        break;
+    case 'delete_user_confirm': $userController->deleteUser($_GET['id'] ?? null); break;
+    default: include 'views/Frontoffice/login.php';
 }
 ?>

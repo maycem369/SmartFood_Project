@@ -1,6 +1,4 @@
 <?php
-// controllers/UserController.php
-
 require_once __DIR__ . '/../config/Database.php';
 require_once __DIR__ . '/../models/User.php';
 require_once __DIR__ . '/../models/Profil.php';
@@ -17,26 +15,19 @@ class UserController {
         $this->profil = new Profil($this->db);
     }
 
-    // ===================== FRONT OFFICE =====================
+    // ================= FRONT OFFICE =================
     public function register() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (empty($_POST['prenom']) || empty($_POST['nom']) || empty($_POST['email']) || empty($_POST['password'])) {
-                $_SESSION['error'] = "Tous les champs obligatoires doivent être remplis.";
-                header("Location: index.php?action=register");
-                exit();
-            }
-            if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
-                $_SESSION['error'] = "Adresse email invalide.";
-                header("Location: index.php?action=register");
-                exit();
-            }
-            if ($_POST['password'] !== $_POST['confirm_password']) {
-                $_SESSION['error'] = "Les mots de passe ne correspondent pas.";
-                header("Location: index.php?action=register");
-                exit();
-            }
-            if (strlen($_POST['password']) < 6) {
-                $_SESSION['error'] = "Le mot de passe doit contenir au moins 6 caractères.";
+            $errors = [];
+            if (empty($_POST['prenom'])) $errors[] = "Prénom requis";
+            if (empty($_POST['nom'])) $errors[] = "Nom requis";
+            if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) $errors[] = "Email invalide";
+            if ($_POST['password'] !== $_POST['confirm_password']) $errors[] = "Mots de passe différents";
+            if (strlen($_POST['password']) < 6) $errors[] = "Mot de passe ≥ 6 caractères";
+            if ($this->user->emailExists($_POST['email'])) $errors[] = "Email déjà utilisé";
+
+            if (!empty($errors)) {
+                $_SESSION['error'] = implode("<br>", $errors);
                 header("Location: index.php?action=register");
                 exit();
             }
@@ -51,11 +42,10 @@ class UserController {
                 $lastId = $this->user->getLastInsertId();
                 $this->profil->id_user = $lastId;
                 $this->profil->createDefault();
-
-                $_SESSION['success'] = "Compte créé avec succès ! Connectez-vous.";
+                $_SESSION['success'] = "Compte créé ! Connectez-vous.";
                 header("Location: index.php?action=login");
             } else {
-                $_SESSION['error'] = "Cet email est déjà utilisé.";
+                $_SESSION['error'] = "Erreur lors de l'inscription.";
                 header("Location: index.php?action=register");
             }
             exit();
@@ -66,29 +56,18 @@ class UserController {
     public function login() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $result = $this->user->login($_POST['email'] ?? '', $_POST['password'] ?? '');
-
             if ($result) {
-                $_SESSION['user_id']    = $result['idUser'];
-                $_SESSION['user_role']  = $result['role'];
+                $_SESSION['user_id'] = $result['idUser'];
+                $_SESSION['user_role'] = $result['role'];
                 $_SESSION['user_prenom'] = $result['prenom'];
-                $_SESSION['user_nom']   = $result['nom'];
+                $_SESSION['user_nom'] = $result['nom'];
                 $_SESSION['user_email'] = $result['email'];
-
                 $profilData = $this->profil->getByUserId($result['idUser']);
                 if ($profilData) {
-                    $_SESSION['user_age'] = $profilData['age'];
-                    $_SESSION['user_poids'] = $profilData['poids'];
-                    $_SESSION['user_taille'] = $profilData['taille'];
-                    $_SESSION['user_objectif'] = $profilData['objectif'];
-                    $_SESSION['user_sexe'] = $profilData['sexe'];
-                    $_SESSION['user_allergies'] = $profilData['allergies'];
-                    $_SESSION['user_niveau_activite'] = $profilData['niveau_activite'];
                     $_SESSION['user_photo'] = $profilData['photo'] ?? 'default-avatar.png';
                 }
-
-                header($result['role'] === 'admin' 
-                    ? "Location: index.php?action=admin_dashboard" 
-                    : "Location: index.php?action=dashboard_user");
+                $redirect = ($result['role'] === 'admin') ? 'admin_dashboard' : 'dashboard_user';
+                header("Location: index.php?action=" . $redirect);
                 exit();
             } else {
                 $_SESSION['error'] = "Email ou mot de passe incorrect.";
@@ -99,58 +78,102 @@ class UserController {
         include __DIR__ . '/../views/Frontoffice/login.php';
     }
 
+    public function forgotPassword() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $email = $_POST['email'];
+            if (!$this->user->emailExists($email)) {
+                $_SESSION['error'] = "Cet email n'existe pas.";
+                header("Location: index.php?action=forgot_password");
+                exit();
+            }
+            $token = bin2hex(random_bytes(32));
+            $expiration = date('Y-m-d H:i:s', strtotime('+1 hour'));
+            $this->db->prepare("DELETE FROM password_reset WHERE email = ?")->execute([$email]);
+            $stmt = $this->db->prepare("INSERT INTO password_reset (email, token, expiration) VALUES (?, ?, ?)");
+            $stmt->execute([$email, $token, $expiration]);
+            $resetLink = "http://localhost/smartfoodMVC/index.php?action=reset_password&token=" . $token;
+            $_SESSION['info'] = "Lien de réinitialisation (démonstration) : <a href='$resetLink'>$resetLink</a>";
+            header("Location: index.php?action=login");
+            exit();
+        }
+        include __DIR__ . '/../views/Frontoffice/forgot_password.php';
+    }
+
+    public function resetPassword() {
+        $token = $_GET['token'] ?? '';
+        if (!$token) {
+            header("Location: index.php?action=login");
+            exit();
+        }
+        $stmt = $this->db->prepare("SELECT * FROM password_reset WHERE token = :token AND expiration > NOW() AND used = 0");
+        $stmt->bindParam(':token', $token);
+        $stmt->execute();
+        $reset = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$reset) {
+            $_SESSION['error'] = "Lien invalide ou expiré.";
+            header("Location: index.php?action=login");
+            exit();
+        }
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $newPassword = $_POST['password'];
+            $confirm = $_POST['confirm_password'];
+            if (strlen($newPassword) < 6) {
+                $_SESSION['error'] = "Mot de passe ≥ 6 caractères.";
+                header("Location: index.php?action=reset_password&token=" . $token);
+                exit();
+            }
+            if ($newPassword !== $confirm) {
+                $_SESSION['error'] = "Les mots de passe ne correspondent pas.";
+                header("Location: index.php?action=reset_password&token=" . $token);
+                exit();
+            }
+            $this->user->updatePassword($reset['email'], $newPassword);
+            $update = $this->db->prepare("UPDATE password_reset SET used = 1 WHERE token = :token");
+            $update->bindParam(':token', $token);
+            $update->execute();
+            $_SESSION['success'] = "Mot de passe modifié. Connectez-vous.";
+            header("Location: index.php?action=login");
+            exit();
+        }
+        include __DIR__ . '/../views/Frontoffice/reset_password.php';
+    }
+
     public function updateProfile() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $_SESSION['user_id'];
-
             $this->user->idUser = $id;
-            $this->user->nom = htmlspecialchars($_POST['nom'] ?? '');
-            $this->user->prenom = htmlspecialchars($_POST['prenom'] ?? '');
-            $this->user->email = htmlspecialchars($_POST['email'] ?? '');
+            $this->user->nom = htmlspecialchars($_POST['nom']);
+            $this->user->prenom = htmlspecialchars($_POST['prenom']);
+            $this->user->email = htmlspecialchars($_POST['email']);
             $this->user->update();
 
             $this->profil->id_user = $id;
-            $this->profil->age = $_POST['age'] ?? 0;
-            $this->profil->sexe = $_POST['sexe'] ?? 'Homme';
-            $this->profil->poids = $_POST['poids'] ?? 0;
-            $this->profil->taille = $_POST['taille'] ?? 0;
-            $this->profil->objectif = $_POST['objectif'] ?? '';
-            $this->profil->niveau_activite = $_POST['niveau_activite'] ?? '';
-            $this->profil->allergies = $_POST['allergies'] ?? '';
+            $this->profil->age = $_POST['age'] ?? null;
+            $this->profil->sexe = $_POST['sexe'] ?? null;
+            $this->profil->poids = $_POST['poids'] ?? null;
+            $this->profil->taille = $_POST['taille'] ?? null;
+            $this->profil->objectif = $_POST['objectif'] ?? null;
+            $this->profil->niveau_activite = $_POST['niveau_activite'] ?? null;
+            $this->profil->allergies = $_POST['allergies'] ?? null;
 
             if (isset($_FILES['photo']) && $_FILES['photo']['error'] == 0) {
-                $target_dir = __DIR__ . "/../assets/uploads/";
-                if (!file_exists($target_dir)) {
-                    mkdir($target_dir, 0777, true);
-                }
-                $file_name = "user_" . $id . "_" . time() . ".jpg";
-                $target_file = $target_dir . $file_name;
-
-                if (move_uploaded_file($_FILES['photo']['tmp_name'], $target_file)) {
-                    $this->profil->photo = $file_name;
-                    $_SESSION['user_photo'] = $file_name;
+                $target = __DIR__ . "/../assets/uploads/";
+                if (!is_dir($target)) mkdir($target, 0777, true);
+                $ext = pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION);
+                $filename = "user_" . $id . "_" . time() . "." . $ext;
+                if (move_uploaded_file($_FILES['photo']['tmp_name'], $target . $filename)) {
+                    $this->profil->photo = $filename;
                 }
             } else {
-                $existingProfil = $this->profil->getByUserId($id);
-                $this->profil->photo = $existingProfil['photo'] ?? 'default-avatar.png';
+                $existing = $this->profil->getByUserId($id);
+                $this->profil->photo = $existing['photo'] ?? 'default-avatar.png';
             }
 
             if ($this->profil->update()) {
-                $_SESSION['user_nom'] = $this->user->nom;
-                $_SESSION['user_prenom'] = $this->user->prenom;
-                $_SESSION['user_email'] = $this->user->email;
-                $_SESSION['user_age'] = $this->profil->age;
-                $_SESSION['user_poids'] = $this->profil->poids;
-                $_SESSION['user_taille'] = $this->profil->taille;
-                $_SESSION['user_objectif'] = $this->profil->objectif;
-                $_SESSION['user_sexe'] = $this->profil->sexe;
-                $_SESSION['user_allergies'] = $this->profil->allergies;
-                $_SESSION['user_niveau_activite'] = $this->profil->niveau_activite;
-                
-                $_SESSION['success'] = "Profil mis à jour avec succès !";
+                $_SESSION['success'] = "Profil mis à jour.";
                 header("Location: index.php?action=profil");
             } else {
-                $_SESSION['error'] = "Erreur lors de la mise à jour.";
+                $_SESSION['error'] = "Erreur mise à jour.";
                 header("Location: index.php?action=edit_profile");
             }
             exit();
@@ -160,124 +183,70 @@ class UserController {
     public function updatePassword() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $_SESSION['user_id'];
-            
             $currentUser = $this->user->readOne($id);
-            
-            if (password_verify($_POST['current_password'], $currentUser['motDePasse'])) {
-                if ($_POST['new_password'] === $_POST['confirm_password']) {
-                    if (strlen($_POST['new_password']) >= 6) {
-                        $newHash = password_hash($_POST['new_password'], PASSWORD_DEFAULT);
-                        
-                        $query = "UPDATE utilisateur SET motDePasse = :password WHERE idUser = :id";
-                        $stmt = $this->db->prepare($query);
-                        $stmt->bindParam(':password', $newHash);
-                        $stmt->bindParam(':id', $id);
-                        
-                        if ($stmt->execute()) {
-                            $_SESSION['success'] = "Mot de passe modifié avec succès !";
-                            header("Location: index.php?action=dashboard_user");
-                        } else {
-                            $_SESSION['error'] = "Erreur lors de la modification.";
-                            header("Location: index.php?action=change_password");
-                        }
-                    } else {
-                        $_SESSION['error'] = "Le nouveau mot de passe doit contenir au moins 6 caractères.";
-                        header("Location: index.php?action=change_password");
-                    }
-                } else {
-                    $_SESSION['error'] = "Les mots de passe ne correspondent pas.";
-                    header("Location: index.php?action=change_password");
-                }
-            } else {
+            if (!password_verify($_POST['current_password'], $currentUser['motDePasse'])) {
                 $_SESSION['error'] = "Mot de passe actuel incorrect.";
+                header("Location: index.php?action=change_password");
+                exit();
+            }
+            if ($_POST['new_password'] !== $_POST['confirm_password']) {
+                $_SESSION['error'] = "Les mots de passe ne correspondent pas.";
+                header("Location: index.php?action=change_password");
+                exit();
+            }
+            if (strlen($_POST['new_password']) < 6) {
+                $_SESSION['error'] = "Mot de passe ≥ 6 caractères.";
+                header("Location: index.php?action=change_password");
+                exit();
+            }
+            $newHash = password_hash($_POST['new_password'], PASSWORD_DEFAULT);
+            $query = "UPDATE utilisateur SET motDePasse = :password WHERE idUser = :id";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':password', $newHash);
+            $stmt->bindParam(':id', $id);
+            if ($stmt->execute()) {
+                $_SESSION['success'] = "Mot de passe changé.";
+                header("Location: index.php?action=dashboard_user");
+            } else {
+                $_SESSION['error'] = "Erreur technique.";
                 header("Location: index.php?action=change_password");
             }
             exit();
         }
     }
 
-    // ===================== BACK OFFICE =====================
-    public function listUsers() {
-        // Vérification admin
-        if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
-            header("Location: index.php?action=login");
-            exit();
-        }
-        
-        $users = $this->user->readAll();
-        // Inclure la vue avec les données
-        include __DIR__ . '/../views/Backoffice/users_list.php';
-    }
-
+    // ================= BACK OFFICE =================
     public function addUser() {
-        // Vérification admin
-        if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
-            header("Location: index.php?action=login");
-            exit();
-        }
-        
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->user->nom = htmlspecialchars($_POST['nom']);
-            $this->user->prenom = htmlspecialchars($_POST['prenom']);
-            $this->user->email = htmlspecialchars($_POST['email']);
+            $this->user->nom = $_POST['nom'];
+            $this->user->prenom = $_POST['prenom'];
+            $this->user->email = $_POST['email'];
             $this->user->motDePasse = $_POST['password'];
-            $this->user->role = $_POST['role'] ?? 'user';
-
+            $this->user->role = $_POST['role'];
             if ($this->user->create()) {
                 $lastId = $this->user->getLastInsertId();
                 $this->profil->id_user = $lastId;
                 $this->profil->createDefault();
-                $_SESSION['success'] = "Utilisateur ajouté avec succès.";
+                $_SESSION['success'] = "Utilisateur ajouté.";
             } else {
-                $_SESSION['error'] = "Erreur lors de l'ajout. L'email existe peut-être déjà.";
+                $_SESSION['error'] = "Email existe déjà.";
             }
             header("Location: index.php?action=users_list");
             exit();
         }
-        
-        include __DIR__ . '/../views/Backoffice/add_user.php';
-    }
-
-    public function editUser($id) {
-        // Vérification admin
-        if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
-            header("Location: index.php?action=login");
-            exit();
-        }
-        
-        if (!$id) {
-            header("Location: index.php?action=users_list");
-            exit();
-        }
-        
-        $user = $this->user->readOne($id);
-        if (!$user) {
-            $_SESSION['error'] = "Utilisateur non trouvé.";
-            header("Location: index.php?action=users_list");
-            exit();
-        }
-        
-        include __DIR__ . '/../views/Backoffice/edit_user.php';
     }
 
     public function updateUser() {
-        // Vérification admin
-        if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
-            header("Location: index.php?action=login");
-            exit();
-        }
-        
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->user->idUser = $_POST['id'];
-            $this->user->nom = htmlspecialchars($_POST['nom']);
-            $this->user->prenom = htmlspecialchars($_POST['prenom']);
-            $this->user->email = htmlspecialchars($_POST['email']);
+            $this->user->nom = $_POST['nom'];
+            $this->user->prenom = $_POST['prenom'];
+            $this->user->email = $_POST['email'];
             $this->user->role = $_POST['role'];
-
             if ($this->user->update()) {
-                $_SESSION['success'] = "Utilisateur modifié avec succès.";
+                $_SESSION['success'] = "Utilisateur modifié.";
             } else {
-                $_SESSION['error'] = "Erreur lors de la modification.";
+                $_SESSION['error'] = "Erreur modification.";
             }
             header("Location: index.php?action=users_list");
             exit();
@@ -285,23 +254,12 @@ class UserController {
     }
 
     public function deleteUser($id) {
-        // Vérification admin
-        if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
-            header("Location: index.php?action=login");
-            exit();
-        }
-        
-        // Empêcher la suppression de son propre compte
         if ($id == $_SESSION['user_id']) {
             $_SESSION['error'] = "Vous ne pouvez pas supprimer votre propre compte.";
-            header("Location: index.php?action=users_list");
-            exit();
-        }
-        
-        if ($id && $this->user->delete($id)) {
-            $_SESSION['success'] = "Utilisateur supprimé avec succès.";
+        } elseif ($this->user->delete($id)) {
+            $_SESSION['success'] = "Utilisateur supprimé.";
         } else {
-            $_SESSION['error'] = "Erreur lors de la suppression.";
+            $_SESSION['error'] = "Erreur suppression.";
         }
         header("Location: index.php?action=users_list");
         exit();
