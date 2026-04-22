@@ -1,36 +1,177 @@
 <?php
-require_once __DIR__ . "/../models/Recette.php";
 
-class RecetteController {
+require_once __DIR__."/../config/Database.php";
 
-    // SHOW ALL
-    public function getAll() {
-        return Recette::getAll();
-    }
+class RecetteController{
 
-    // SEARCH BY INGREDIENTS
-    public function search($ingredients) {
-        return Recette::searchByIngredients($ingredients);
-    }
+/* ================= HANDLE REQUEST ================= */
 
-    // ADD
-    public function add($nom, $description, $ingredients) {
-        Recette::add($nom, $description, $ingredients);
-    }
+function handleRequest(){
 
-    // DELETE
-    public function delete($id) {
-        Recette::delete($id);
-    }
-
-    // UPDATE
-    public function update($id, $nom) {
-        Recette::update($id, $nom);
-    }
-
-    // VALIDATE
-    public function validate($id) {
-        Recette::validate($id);
-    }
+if(isset($_POST['add'])){
+$this->addRecette($_POST);
 }
-?>
+
+if(isset($_POST['delete'])){
+$this->delete($_POST['id']);
+}
+
+if(isset($_POST['update'])){
+$this->update($_POST['id'],$_POST['nom']);
+}
+
+if(isset($_POST['validate'])){
+$this->validate($_POST['id']);
+}
+
+}
+
+/* ================= ADD RECETTE + VALIDATION ================= */
+
+function addRecette($data){
+
+if(empty($data['nom'])){
+echo "Nom obligatoire";
+return;
+}
+
+if(empty($data['description'])){
+echo "Description obligatoire";
+return;
+}
+
+if(!isset($data['ingredients'])){
+echo "Choisir au moins un ingredient";
+return;
+}
+
+$db=Database::connect();
+
+$sql="INSERT INTO recettes(nom,description,status)
+VALUES(?,?, 'Non validée')";
+
+$stmt=$db->prepare($sql);
+$stmt->execute([
+$data['nom'],
+$data['description']
+]);
+
+$idrecette = $db->lastInsertId();
+
+foreach($data['ingredients'] as $iding){
+$this->addIngredientToRecette($idrecette,$iding);
+}
+
+}
+
+/* ================= ADD RELATION ================= */
+
+function addIngredientToRecette($idrecette,$idingredient){
+
+$db=Database::connect();
+
+$sql="INSERT INTO recette_ingredient
+VALUES(?,?)";
+
+$stmt=$db->prepare($sql);
+$stmt->execute([$idrecette,$idingredient]);
+
+}
+
+/* ================= GET ALL ================= */
+
+function getAll(){
+
+$db=Database::connect();
+
+$sql="
+SELECT r.idrecette,r.nom,r.description,r.status,
+GROUP_CONCAT(i.nom SEPARATOR ', ') as ingredients
+FROM recettes r
+LEFT JOIN recette_ingredient ri ON r.idrecette=ri.idrecette
+LEFT JOIN ingredient i ON ri.idingredient=i.idingredient
+GROUP BY r.idrecette
+";
+
+return $db->query($sql)->fetchAll();
+}
+
+/* ================= SEARCH ================= */
+
+function search($ingredient){
+
+$db=Database::connect();
+
+$sql="
+SELECT r.idrecette,r.nom,r.description,r.status,
+GROUP_CONCAT(i.nom SEPARATOR ', ') as ingredients
+FROM recettes r
+JOIN recette_ingredient ri ON r.idrecette=ri.idrecette
+JOIN ingredient i ON ri.idingredient=i.idingredient
+WHERE r.idrecette IN (
+
+SELECT r2.idrecette
+FROM recettes r2
+JOIN recette_ingredient ri2 ON r2.idrecette=ri2.idrecette
+JOIN ingredient i2 ON ri2.idingredient=i2.idingredient
+WHERE i2.nom=?
+
+)
+
+GROUP BY r.idrecette
+";
+
+$stmt=$db->prepare($sql);
+$stmt->execute([$ingredient]);
+
+return $stmt->fetchAll();
+}
+
+/* ================= DELETE ================= */
+
+function delete($id){
+
+$db=Database::connect();
+
+$db->prepare("DELETE FROM recette_ingredient WHERE idrecette=?")
+->execute([$id]);
+
+$db->prepare("DELETE FROM recettes WHERE idrecette=?")
+->execute([$id]);
+
+}
+
+/* ================= UPDATE ================= */
+
+function update($id,$nom){
+
+if(empty($nom)){
+echo "Nom obligatoire";
+return;
+}
+
+$db=Database::connect();
+
+$sql="UPDATE recettes SET nom=? WHERE idrecette=?";
+
+$stmt=$db->prepare($sql);
+$stmt->execute([$nom,$id]);
+
+}
+
+/* ================= VALIDATE ================= */
+
+function validate($id){
+
+$db=Database::connect();
+
+$sql="UPDATE recettes 
+SET status='Validée'
+WHERE idrecette=?";
+
+$stmt=$db->prepare($sql);
+$stmt->execute([$id]);
+
+}
+
+}

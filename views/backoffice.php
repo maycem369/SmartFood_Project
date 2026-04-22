@@ -1,29 +1,14 @@
 <?php
 require_once __DIR__ . "/../controllers/RecetteController.php";
+require_once __DIR__ . "/../controllers/IngredientController.php";
 
 $c = new RecetteController();
+$ic = new IngredientController();
 
-/* ======================
-   ACTIONS (CRUD)
-====================== */
-
-if(isset($_POST['add'])){
-    $c->add($_POST['nom'], $_POST['description'], $_POST['ingredients']);
-}
-
-if(isset($_POST['delete'])){
-    $c->delete($_POST['id']);
-}
-
-if(isset($_POST['update'])){
-    $c->update($_POST['id'], $_POST['nom']);
-}
-
-if(isset($_POST['validate'])){
-    $c->validate($_POST['id']);
-}
+$c->handleRequest();
 
 $recettes = $c->getAll();
+$ingredients = $ic->getAll();
 ?>
 
 <!DOCTYPE html>
@@ -38,7 +23,6 @@ $recettes = $c->getAll();
 <table width="100%" cellspacing="0">
 <tr>
 
-<!-- SIDEBAR -->
 <td width="220" bgcolor="#2D6A4F" valign="top">
 
 <h2 style="color:white; padding-left:15px;">
@@ -52,39 +36,45 @@ Smart<span style="color:#FF8C00;">Food</span>
 
 </td>
 
-<!-- CONTENT -->
 <td valign="top" style="padding:20px;">
 
 <h2 style="color:#2D6A4F;">Back Office - Gestion Recettes</h2>
 
-<!-- ================= ADD ================= -->
 <h3>Ajouter Recette</h3>
 
 <form method="POST">
-Nom : <input type="text" name="nom" required><br><br>
+Nom : <input type="text" name="nom"><br><br>
 
 Description : <br>
-<textarea name="description" required></textarea><br><br>
+<textarea name="description"></textarea><br><br>
 
-Ingredients : <br>
-<input type="text" name="ingredients"
-placeholder="tomato cheese pasta"><br><br>
+Ingrédients : <br>
+
+<?php foreach($ingredients as $i){ ?>
+<label>
+<input type="checkbox"
+name="ingredients[]"
+value="<?= $i['idingredient'] ?>">
+<?= $i['nom'] ?>
+</label><br>
+<?php } ?>
+
+<br>
 
 <button name="add"
 style="background:#2D6A4F;color:white;padding:8px;">
 Ajouter
 </button>
+
 </form>
 
 <hr>
 
-<!-- ================= UPDATE ================= -->
 <h3>Modifier Recette</h3>
 
 <form method="POST">
-ID : <input type="number" name="id" required><br><br>
-
-Nouveau Nom : <input type="text" name="nom" required><br><br>
+ID : <input type="number" name="id"><br><br>
+Nouveau Nom : <input type="text" name="nom"><br><br>
 
 <button name="update"
 style="background:#FF8C00;color:white;padding:8px;">
@@ -94,11 +84,10 @@ Modifier
 
 <hr>
 
-<!-- ================= DELETE + VALIDATE ================= -->
 <h3>Supprimer / Valider</h3>
 
 <form method="POST">
-ID : <input type="number" name="id" required><br><br>
+ID : <input type="number" name="id"><br><br>
 
 <button name="delete"
 style="background:red;color:white;padding:8px;">
@@ -109,14 +98,15 @@ Supprimer
 style="background:#2D6A4F;color:white;padding:8px;">
 Valider
 </button>
+
 </form>
 
 <hr>
 
-<!-- ================= TABLE ================= -->
 <h3>Liste des Recettes</h3>
 
 <table border="1" width="100%" cellpadding="8">
+
 <tr style="background:#2D6A4F;color:white;">
 <th>ID</th>
 <th>Nom</th>
@@ -127,7 +117,7 @@ Valider
 
 <?php foreach($recettes as $r){ ?>
 <tr>
-<td><?= $r['id'] ?></td>
+<td><?= $r['idrecette'] ?></td>
 <td><?= $r['nom'] ?></td>
 <td><?= $r['description'] ?></td>
 <td><?= $r['ingredients'] ?></td>
