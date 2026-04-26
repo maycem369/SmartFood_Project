@@ -38,13 +38,14 @@ if (isset($_SESSION['nutrition_errors'])) {
 </head>
 <body class="admin-body">
 
-    <div class="dashboard-container">
-        <!-- Sidebar du Back Office -->
-        <nav class="sidebar admin-sidebar">
-            <div class="logo">Smart<span>Food</span><br><small>Espace Nutritionniste</small></div>
+    <div class="admin-layout">
+        <!-- Top Navbar du Back Office -->
+        <nav class="admin-navbar">
+            <div class="logo">Smart<span>Food</span> <small>Admin</small></div>
             <ul class="nav-links">
                 <li><a href="../frontoffice/index.php">⬅️ Retour au Front Office</a></li>
                 <li class="active"><a href="index.php">🥑 Base de données Ingrédients</a></li>
+                <li><a href="nutrition_dashboard.php">📊 Rapport Nutritionnel</a></li>
                 <li><a href="#">⚙️ Validation Recettes</a></li>
             </ul>
         </nav>

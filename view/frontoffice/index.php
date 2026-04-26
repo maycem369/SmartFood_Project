@@ -13,8 +13,9 @@ $ingredients = $ctrl->listIngredients();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartFood - Modern Tracker</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/front-style.css">
+    <link rel="stylesheet" href="../css/style.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="../css/front-style.css?v=<?php echo time(); ?>">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 </head>
 <body class="front-page">
 
@@ -198,13 +199,94 @@ $ingredients = $ctrl->listIngredients();
                         </table>
                     </div>
                 </section>
+
+                <!-- Section Statistiques Progression -->
+                <section class="card bento-item-stats">
+                    <div class="section-header">
+                        <h3>📊 Ma Progression</h3>
+                        <span class="badge-status" id="stats-status">Configurez vos objectifs</span>
+                    </div>
+                    <div class="progress-charts-grid">
+                        <div class="progress-chart-card safe-zone">
+                            <canvas id="chart-cals" width="120" height="120"></canvas>
+                            <div class="chart-label">
+                                <span class="chart-percent" id="chart-cals-percent">0%</span>
+                                <span class="chart-name">Calories</span>
+                                <span class="chart-detail" id="chart-cals-detail">-- restant</span>
+                            </div>
+                        </div>
+                        <div class="progress-chart-card safe-zone">
+                            <canvas id="chart-prot" width="120" height="120"></canvas>
+                            <div class="chart-label">
+                                <span class="chart-percent" id="chart-prot-percent">0%</span>
+                                <span class="chart-name">Protéines</span>
+                                <span class="chart-detail" id="chart-prot-detail">-- restant</span>
+                            </div>
+                        </div>
+                        <div class="progress-chart-card safe-zone">
+                            <canvas id="chart-gluc" width="120" height="120"></canvas>
+                            <div class="chart-label">
+                                <span class="chart-percent" id="chart-gluc-percent">0%</span>
+                                <span class="chart-name">Glucides</span>
+                                <span class="chart-detail" id="chart-gluc-detail">-- restant</span>
+                            </div>
+                        </div>
+                        <div class="progress-chart-card safe-zone">
+                            <canvas id="chart-lip" width="120" height="120"></canvas>
+                            <div class="chart-label">
+                                <span class="chart-percent" id="chart-lip-percent">0%</span>
+                                <span class="chart-name">Lipides</span>
+                                <span class="chart-detail" id="chart-lip-detail">-- restant</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section Suggestion Intelligente -->
+                <section class="card bento-item-suggestion">
+                    <div class="section-header">
+                        <h3>💡 Suggestion Intelligente</h3>
+                    </div>
+                    <div id="suggestion-container">
+                        <div class="suggestion-card suggestion-empty">
+                            <span class="suggestion-icon">🤔</span>
+                            <div class="suggestion-text">
+                                <strong>En attente</strong>
+                                <p>Configurez vos objectifs et ajoutez un repas pour recevoir des recommandations.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
             </div> <!-- End bento-grid -->
         </main>
     </div>
 
     <script src="../js/validation.js"></script>
+    <script src="../js/metier.js"></script>
     <script>
-        // Keep existing JS logic
+        // === User Goals (shared state) ===
+        var userGoals = { cals: 0, prot: 0, gluc: 0, lip: 0 };
+        var currentTotals = { cals: 0, prot: 0, gluc: 0, lip: 0 };
+
+        // === Build ingredients DB from PHP data for suggestions ===
+        var ingredientsDB = [];
+        var foodSelect = document.getElementById('food-select');
+        for (var i = 0; i < foodSelect.options.length; i++) {
+            var opt = foodSelect.options[i];
+            if (opt.value && opt.getAttribute('data-nom')) {
+                ingredientsDB.push({
+                    id: opt.value,
+                    nom: opt.getAttribute('data-nom'),
+                    cals: parseFloat(opt.getAttribute('data-cals')) || 0,
+                    prot: parseFloat(opt.getAttribute('data-prot')) || 0,
+                    gluc: parseFloat(opt.getAttribute('data-gluc')) || 0,
+                    lip: parseFloat(opt.getAttribute('data-lip')) || 0
+                });
+            }
+        }
+
+        // === Profile & Goals Calculation ===
         document.getElementById('save-profile-btn').addEventListener('click', function() {
             var valid = true;
             var height = document.getElementById('height-input').value.trim();
@@ -232,8 +314,15 @@ $ingredients = $ctrl->listIngredients();
             document.getElementById('target-prot').textContent = protGrams + ' g';
             document.getElementById('target-gluc').textContent = carbGrams + ' g';
             document.getElementById('target-lip').textContent = fatGrams + ' g';
+
+            // Store goals and update charts
+            userGoals = { cals: targetCals, prot: protGrams, gluc: carbGrams, lip: fatGrams };
+            document.getElementById('stats-status').textContent = 'En cours de suivi';
+            updateAllCharts(currentTotals, userGoals);
+            updateSuggestion(ingredientsDB, currentTotals, userGoals);
         });
 
+        // === Meal Journal ===
         var journal = [];
         document.getElementById('add-btn').addEventListener('click', function() {
             var valid = true; clearError('error-food'); clearError('error-weight');
@@ -270,10 +359,14 @@ $ingredients = $ctrl->listIngredients();
             document.getElementById('total-prot').textContent = Math.round(tp * 10) / 10;
             document.getElementById('total-gluc').textContent = Math.round(tg * 10) / 10;
             document.getElementById('total-lip').textContent = Math.round(tl * 10) / 10;
+
+            // Update shared totals and refresh charts + suggestion
+            currentTotals = { cals: tc, prot: tp, gluc: tg, lip: tl };
+            updateAllCharts(currentTotals, userGoals);
+            updateSuggestion(ingredientsDB, currentTotals, userGoals);
         }
 
         function removeEntry(index) { journal.splice(index, 1); renderJournal(); }
-        function escapeHtml(text) { var div = document.createElement('div'); div.appendChild(document.createTextNode(text)); return div.innerHTML; }
         var today = new Date(); var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
         document.getElementById('today-date').textContent = today.toLocaleDateString('fr-FR', options);
     </script>

@@ -32,10 +32,10 @@ if (isset($_GET['error'])) {
 </head>
 <body class="admin-body">
 
-    <div class="dashboard-container">
-        <!-- Sidebar du Back Office -->
-        <nav class="sidebar admin-sidebar">
-            <div class="logo">Smart<span>Food</span><br><small>Espace Nutritionniste</small></div>
+    <div class="admin-layout">
+        <!-- Top Navbar du Back Office -->
+        <nav class="admin-navbar">
+            <div class="logo">Smart<span>Food</span> <small>Admin</small></div>
             <ul class="nav-links">
                 <li><a href="../frontoffice/index.php">⬅️ Retour au Front Office</a></li>
                 <li class="active"><a href="index.php">🥑 Base de données Ingrédients</a></li>
@@ -104,17 +104,22 @@ if (isset($_GET['error'])) {
                     <h3>Ingrédients disponibles dans le Front Office</h3>
                     <span class="badge-status">Total: <?php echo $totalIngredients; ?> Ingrédients</span>
                 </div>
+
+                <!-- Barre de recherche -->
+                <div class="search-bar">
+                    <input type="text" id="search-ingredient" placeholder="🔍 Rechercher un ingrédient..." autocomplete="off">
+                </div>
                 
                 <div class="table-responsive">
                     <table class="smart-table">
                         <thead>
                             <tr>
-                                <th>ID DB</th>
-                                <th>Aliment</th>
-                                <th>Cals (100g)</th>
-                                <th>Prot (100g)</th>
-                                <th>Gluc (100g)</th>
-                                <th>Lip (100g)</th>
+                                <th data-sort="id" data-col="0" data-type="number">ID DB ↕</th>
+                                <th data-sort="nom" data-col="1" data-type="text">Aliment ↕</th>
+                                <th data-sort="cals" data-col="2" data-type="number">Cals (100g) ↕</th>
+                                <th data-sort="prot" data-col="3" data-type="number">Prot (100g) ↕</th>
+                                <th data-sort="gluc" data-col="4" data-type="number">Gluc (100g) ↕</th>
+                                <th data-sort="lip" data-col="5" data-type="number">Lip (100g) ↕</th>
                                 <th>Actions Admin</th>
                             </tr>
                         </thead>
@@ -146,6 +151,11 @@ if (isset($_GET['error'])) {
                                 </tr>
                                 <?php endforeach; ?>
                             <?php endif; ?>
+                            <tr id="no-search-results" style="display:none;">
+                                <td colspan="7" style="text-align:center; color:#999; padding:30px;">
+                                    Aucun ingrédient ne correspond à votre recherche.
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -154,6 +164,7 @@ if (isset($_GET['error'])) {
     </div>
 
     <script src="../js/validation.js"></script>
+    <script src="../js/metier.js"></script>
     <script>
         // Attacher la validation au formulaire d'ajout
         document.getElementById('admin-add-food').addEventListener('submit', function(e) {

@@ -228,3 +228,161 @@ body.front-page {
 .bento-grid > *:nth-child(2) { animation-delay: 0.2s; }
 .bento-grid > *:nth-child(3) { animation-delay: 0.3s; }
 .bento-grid > *:nth-child(4) { animation-delay: 0.4s; }
+.bento-grid > *:nth-child(5) { animation-delay: 0.5s; }
+.bento-grid > *:nth-child(6) { animation-delay: 0.6s; }
+
+/* New bento items */
+.bento-item-stats { grid-column: span 2; }
+.bento-item-suggestion { grid-column: span 1; }
+
+@media (max-width: 1100px) {
+    .bento-item-stats { grid-column: span 2; }
+    .bento-item-suggestion { grid-column: span 2; }
+}
+
+/* ============================================================
+   PROGRESS CHARTS — Donut Cards
+   ============================================================ */
+
+.progress-charts-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-top: 15px;
+}
+
+.progress-chart-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 10px;
+    border-radius: 20px;
+    background: var(--white);
+    border: 2px solid transparent;
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-chart-card canvas {
+    max-width: 100px;
+    max-height: 100px;
+}
+
+.chart-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 12px;
+    gap: 2px;
+}
+
+.chart-percent {
+    font-size: 1.6rem;
+    font-weight: 700;
+    font-family: 'Outfit', sans-serif;
+    transition: color 0.4s;
+}
+
+.chart-name {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: #888;
+    letter-spacing: 0.5px;
+}
+
+.chart-detail {
+    font-size: 0.72rem;
+    color: #aaa;
+    margin-top: 2px;
+    transition: color 0.4s;
+}
+
+/* === Zone States === */
+.progress-chart-card.safe-zone {
+    border-color: rgba(45, 106, 79, 0.15);
+    background: linear-gradient(180deg, rgba(45, 106, 79, 0.03) 0%, white 100%);
+}
+
+.progress-chart-card.warning-zone {
+    border-color: rgba(255, 140, 0, 0.3);
+    background: linear-gradient(180deg, rgba(255, 140, 0, 0.05) 0%, white 100%);
+}
+
+.progress-chart-card.danger-zone {
+    border-color: rgba(139, 0, 0, 0.35);
+    background: linear-gradient(180deg, rgba(139, 0, 0, 0.06) 0%, rgba(255, 240, 240, 0.8) 100%);
+    animation: dangerPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes dangerPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(139, 0, 0, 0); }
+    50% { box-shadow: 0 0 20px 4px rgba(139, 0, 0, 0.15); }
+}
+
+@media (max-width: 768px) {
+    .progress-charts-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* ============================================================
+   SUGGESTION INTELLIGENTE
+   ============================================================ */
+
+.suggestion-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 20px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(45, 106, 79, 0.05) 0%, rgba(255, 140, 0, 0.03) 100%);
+    border: 1px solid rgba(45, 106, 79, 0.12);
+    transition: all 0.4s;
+}
+
+.suggestion-card:hover {
+    border-color: rgba(45, 106, 79, 0.25);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(45, 106, 79, 0.08);
+}
+
+.suggestion-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.suggestion-text strong {
+    display: block;
+    font-size: 1rem;
+    color: var(--text-dark);
+    margin-bottom: 6px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.suggestion-text p {
+    font-size: 0.85rem;
+    color: #666;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.suggestion-text b {
+    color: var(--front-accent);
+}
+
+.suggestion-warning {
+    background: linear-gradient(135deg, rgba(139, 0, 0, 0.06) 0%, rgba(255, 200, 200, 0.1) 100%);
+    border-color: rgba(139, 0, 0, 0.2);
+}
+
+.suggestion-warning strong {
+    color: #8b0000;
+}
+
+.suggestion-empty {
+    background: rgba(0, 0, 0, 0.02);
+    border-color: rgba(0, 0, 0, 0.06);
+}
