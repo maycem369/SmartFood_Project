@@ -89,7 +89,7 @@ switch ($action) {
         break;
 
     case 'update_user':
-        $userController->updateUserAdmin();   // ← méthode renommée pour cohérence
+        $userController->updateUser_admin();   // ← méthode renommée pour cohérence
         break;
 
     case 'user_details':
