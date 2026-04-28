@@ -16,7 +16,7 @@
         <div class="form-group"><label>Email</label><input type="email" name="email" required></div>
         <button type="submit" class="btn btn-primary">Envoyer le lien</button>
     </form>
-    <div class="links"><a href="index.php?action=login">Retour à la connexion</a></div>
+    <div class="links"><a href="index.php">Retour à la connexion</a></div>
 </div>
 <script src="assets/js/validation.js"></script>
 </body>

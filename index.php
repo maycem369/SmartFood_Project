@@ -8,15 +8,15 @@ require_once 'controllers/UserController.php';
 require_once 'controllers/ProfilController.php';
 require_once 'controllers/AdminController.php';
 
-$userController = new UserController();
+$userController  = new UserController();
 $profilController = new ProfilController();
 $adminController = new AdminController();
 
-// Page par défaut : 'home' (landing page) au lieu de 'login'
 $action = $_GET['action'] ?? 'home';
 
 switch ($action) {
-    // Front Office - pages publiques
+
+    // ── Pages publiques ───────────────────────────────────────────────────────
     case 'home':
         include 'views/Frontoffice/home.php';
         break;
@@ -36,13 +36,16 @@ switch ($action) {
     case 'reset_password':
         $userController->resetPassword();
         break;
+        
 
+    case 'logout':
+        session_destroy();
+        header("Location: index.php");
+        exit();
+
+    // ── Front Office (connecté) ───────────────────────────────────────────────
     case 'dashboard_user':
-        if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'user') {
-            header("Location: index.php?action=login");
-            exit();
-        }
-        include 'views/Frontoffice/dashboard_user.php';
+        $userController->dashboardUser();       // logique déplacée dans le contrôleur
         break;
 
     case 'profil':
@@ -58,53 +61,32 @@ switch ($action) {
         break;
 
     case 'change_password':
-        if (!isset($_SESSION['user_id'])) {
-            header("Location: index.php?action=login");
-            exit();
-        }
-        include 'views/Frontoffice/change_password.php';
+        $profilController->showChangePassword(); // nouvelle méthode dans ProfilController
         break;
 
     case 'update_password':
         $userController->updatePassword();
         break;
 
-    case 'logout':
-        session_destroy();
-        header("Location: index.php?action=login");
-        exit();
-
-    // Back Office
+    // ── Back Office (admin) ───────────────────────────────────────────────────
     case 'admin_dashboard':
         $adminController->dashboard();
         break;
 
     case 'users_list':
-        if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
-            header("Location: index.php?action=login");
-            exit();
-        }
-        include 'views/Backoffice/users_list.php';
+        $adminController->usersList();           // plus de SQL dans la vue
         break;
 
     case 'add_user':
-        if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
-            header("Location: index.php?action=login");
-            exit();
-        }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $userController->addUser();
         } else {
-            include 'views/Backoffice/add_user.php';
+            $adminController->showAddUser();     // nouvelle méthode
         }
         break;
 
     case 'edit_user':
-        if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
-            header("Location: index.php?action=login");
-            exit();
-        }
-        include 'views/Backoffice/edit_user.php';
+        $adminController->editUser();            // charge $user dans le contrôleur
         break;
 
     case 'update_user':
@@ -112,27 +94,62 @@ switch ($action) {
         break;
 
     case 'user_details':
-        if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
-            header("Location: index.php?action=login");
-            exit();
-        }
-        include 'views/Backoffice/user_details.php';
+        $adminController->userDetails();         // charge $user dans le contrôleur
         break;
 
     case 'delete_user':
-        if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
-            header("Location: index.php?action=login");
-            exit();
-        }
-        include 'views/Backoffice/delete_user.php';
+        $adminController->deleteUser();          // charge $user + vérification dans le contrôleur
         break;
 
     case 'delete_user_confirm':
-        $userController->deleteUser($_GET['id'] ?? null);
+        $adminController->deleteUserConfirm();
         break;
+case 'ajax_forgot_password':
+    header('Content-Type: application/json');
+    require_once 'models/User.php';
+    $database = new Database();
+    $db = $database->getConnection();
+    $user = new User($db);
+    $email = $_POST['email'] ?? '';
+    if (!$user->emailExists($email)) {
+        echo json_encode(['success' => false, 'message' => 'Cet email n\'existe pas.']);
+        exit;
+    }
+    $token = bin2hex(random_bytes(32));
+    $expiration = date('Y-m-d H:i:s', strtotime('+1 hour'));
+    $db->prepare("DELETE FROM password_reset WHERE email = ?")->execute([$email]);
+    $stmt = $db->prepare("INSERT INTO password_reset (email, token, expiration) VALUES (?, ?, ?)");
+    $stmt->execute([$email, $token, $expiration]);
+    echo json_encode(['success' => true, 'message' => 'Un lien de réinitialisation a été généré.', 'token' => $token]);
+    exit;
 
+case 'ajax_reset_password':
+    header('Content-Type: application/json');
+    require_once 'models/User.php';
+    $database = new Database();
+    $db = $database->getConnection();
+    $token = $_POST['token'] ?? '';
+    $newPassword = $_POST['password'] ?? '';
+    if (strlen($newPassword) < 6) {
+        echo json_encode(['success' => false, 'message' => 'Mot de passe trop court (minimum 6 caractères).']);
+        exit;
+    }
+    $stmt = $db->prepare("SELECT * FROM password_reset WHERE token = :token AND expiration > NOW() AND used = 0");
+    $stmt->bindParam(':token', $token);
+    $stmt->execute();
+    $reset = $stmt->fetch(PDO::FETCH_ASSOC);
+    if (!$reset) {
+        echo json_encode(['success' => false, 'message' => 'Lien invalide ou expiré.']);
+        exit;
+    }
+    $user = new User($db);
+    $user->updatePassword($reset['email'], $newPassword);
+    $update = $db->prepare("UPDATE password_reset SET used = 1 WHERE token = :token");
+    $update->bindParam(':token', $token);
+    $update->execute();
+    echo json_encode(['success' => true, 'message' => 'Mot de passe modifié avec succès !']);
+    exit;
     default:
-        // Si l'action n'existe pas, afficher la page d'accueil
         include 'views/Frontoffice/home.php';
 }
 ?>

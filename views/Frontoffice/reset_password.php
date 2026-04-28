@@ -1,7 +1,7 @@
 <?php
 $token = $_GET['token'] ?? '';
 if (!$token) {
-    header("Location: index.php?action=login");
+    header("Location: index.php");
     exit();
 }
 ?>

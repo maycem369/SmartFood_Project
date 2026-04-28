@@ -22,7 +22,7 @@
         <div class="form-group"><label>Confirmer</label><input type="password" name="confirm_password" required></div>
         <button type="submit" class="btn btn-primary">S'inscrire</button>
     </form>
-    <div class="links"><p>Déjà inscrit ? <a href="index.php?action=login">Se connecter</a></p></div>
+    <div class="links"><p>Déjà inscrit ? <a href="index.php">Se connecter</a></p></div>
 </div>
 <script src="assets/js/validation.js"></script>
 </body>

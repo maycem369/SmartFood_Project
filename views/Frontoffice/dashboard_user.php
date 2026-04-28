@@ -1,9 +1,3 @@
-<?php
-if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'user') {
-    header("Location: index.php?action=login");
-    exit();
-}
-?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -27,19 +21,46 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'user') {
         <h1>Tableau de bord</h1>
         <div class="user-avatar">
             <img src="assets/uploads/<?= htmlspecialchars($_SESSION['user_photo'] ?? 'default-avatar.png') ?>" alt="Avatar">
-            <div><strong><?= htmlspecialchars($_SESSION['user_prenom'] ?? '') ?></strong><small>Utilisateur</small></div>
+            <div>
+                <strong><?= htmlspecialchars($_SESSION['user_prenom'] ?? '') ?></strong>
+                <small>Utilisateur</small>
+            </div>
         </div>
     </div>
+
     <div class="card">
         <h2 class="welcome">Bienvenue, <?= htmlspecialchars($_SESSION['user_prenom'] ?? '') ?> ! 👋</h2>
         <p class="subtitle">Nous sommes heureux de vous revoir sur SmartFood.</p>
+
         <div class="stats-grid">
-            <div class="stat-card"><h3>IMC Actuel</h3><div class="stat-number">22.8</div><p style="color:#28a745;">Normal</p></div>
-            <div class="stat-card"><h3>Calories Aujourd'hui</h3><div class="stat-number">1680 / 2200</div><p>Il reste <strong>520 kcal</strong></p></div>
-            <div class="stat-card"><h3>Objectif</h3><div class="stat-number">Perte de poids</div><p>-0.8 kg cette semaine</p></div>
+            <div class="stat-card">
+                <h3>IMC Actuel</h3>
+                <?php if ($imc): ?>
+                    <div class="stat-number"><?= htmlspecialchars($imc) ?></div>
+                    <p><?= htmlspecialchars($imcLabel) ?></p>
+                <?php else: ?>
+                    <div class="stat-number">--</div>
+                    <p>Profil incomplet</p>
+                <?php endif; ?>
+            </div>
+            <div class="stat-card">
+                <h3>Objectif</h3>
+                <div class="stat-number" style="font-size:1.2rem;">
+                    <?= htmlspecialchars($profilData['objectif'] ?? 'Non défini') ?>
+                </div>
+            </div>
+            <div class="stat-card">
+                <h3>Activité</h3>
+                <div class="stat-number" style="font-size:1.2rem;">
+                    <?= htmlspecialchars($profilData['niveau_activite'] ?? 'Non défini') ?>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="text-center mt-30"><button onclick="location.href='index.php?action=profil'" class="btn btn-orange">Voir mon profil complet</button></div>
+
+    <div class="text-center mt-30">
+        <button onclick="location.href='index.php?action=profil'" class="btn btn-orange">Voir mon profil complet</button>
+    </div>
 </div>
 <script src="assets/js/validation.js"></script>
 </body>
