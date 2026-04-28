@@ -1,44 +1,28 @@
 <?php
 class StatsModel {
     private $conn;
+    private $totalUsers;
+    private $totalRecettes;
+    private $totalIngredients;
+    private $totalSuggestionsIA;
+
     public function __construct($db) {
         $this->conn = $db;
     }
-    public function getTotalUsers() {
-        $stmt = $this->conn->query("SELECT COUNT(*) as total FROM utilisateur");
-        return $stmt->fetch(PDO::FETCH_ASSOC)['total'];
-    }
-    public function getTotalRecettes() {
-        $stmt = $this->conn->query("SELECT COUNT(*) as total FROM recette");
-        return $stmt->fetch(PDO::FETCH_ASSOC)['total'];
-    }
-    public function getTotalIngredients() { return 320; } // valeur exemple
-    public function getTotalSuggestionsIA() { return 1200; }
-    public function getRecettesParMois() {
-        $query = "SELECT DATE_FORMAT(date_creation, '%Y-%m') as mois, COUNT(*) as nombre FROM recette WHERE date_creation >= DATE_SUB(NOW(), INTERVAL 12 MONTH) GROUP BY mois ORDER BY mois ASC";
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-    public function getCaloriesMoyennesParMois() {
-        $query = "SELECT DATE_FORMAT(date_creation, '%Y-%m') as mois, AVG(caloriesTotales) as moyenne_calories FROM recette WHERE date_creation >= DATE_SUB(NOW(), INTERVAL 12 MONTH) GROUP BY mois ORDER BY mois ASC";
-        $stmt = $this->conn->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-    public function getDerniersUtilisateurs($limit = 5) {
-        $query = "SELECT idUser, nom, prenom, email, role, date_creation FROM utilisateur ORDER BY date_creation DESC LIMIT :limit";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-    public function getDernieresRecettes($limit = 5) {
-        $query = "SELECT r.idRecette, r.nom, r.caloriesTotales, r.date_creation, u.nom as auteur_nom, u.prenom as auteur_prenom FROM recette r LEFT JOIN utilisateur u ON r.id_user = u.idUser ORDER BY r.date_creation DESC LIMIT :limit";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
+
+    // ── Getters ───────────────────────────────────────────────────────────────
+
+    public function getConn() { return $this->conn; }
+    public function getTotalUsers() { return $this->totalUsers; }
+    public function getTotalRecettes() { return $this->totalRecettes; }
+    public function getTotalIngredients() { return $this->totalIngredients; }
+    public function getTotalSuggestionsIA() { return $this->totalSuggestionsIA; }
+
+    // ── Setters ───────────────────────────────────────────────────────────────
+
+    public function setTotalUsers($total): void { $this->totalUsers = $total; }
+    public function setTotalRecettes($total): void { $this->totalRecettes = $total; }
+    public function setTotalIngredients($total): void { $this->totalIngredients = $total; }
+    public function setTotalSuggestionsIA($total): void { $this->totalSuggestionsIA = $total; }
 }
 ?>

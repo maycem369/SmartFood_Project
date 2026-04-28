@@ -36,7 +36,6 @@ switch ($action) {
     case 'reset_password':
         $userController->resetPassword();
         break;
-        
 
     case 'logout':
         session_destroy();
@@ -45,7 +44,7 @@ switch ($action) {
 
     // ── Front Office (connecté) ───────────────────────────────────────────────
     case 'dashboard_user':
-        $userController->dashboardUser();       // logique déplacée dans le contrôleur
+        $userController->dashboardUser();
         break;
 
     case 'profil':
@@ -61,7 +60,7 @@ switch ($action) {
         break;
 
     case 'change_password':
-        $profilController->showChangePassword(); // nouvelle méthode dans ProfilController
+        $profilController->showChangePassword();
         break;
 
     case 'update_password':
@@ -74,81 +73,46 @@ switch ($action) {
         break;
 
     case 'users_list':
-        $adminController->usersList();           // plus de SQL dans la vue
+        $adminController->usersList();
         break;
 
     case 'add_user':
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $userController->addUser();
         } else {
-            $adminController->showAddUser();     // nouvelle méthode
+            $adminController->showAddUser();
         }
         break;
 
     case 'edit_user':
-        $adminController->editUser();            // charge $user dans le contrôleur
+        $adminController->editUser();
         break;
 
     case 'update_user':
-        $userController->updateUser();
+        $userController->updateUserAdmin();   // ← méthode renommée pour cohérence
         break;
 
     case 'user_details':
-        $adminController->userDetails();         // charge $user dans le contrôleur
+        $adminController->userDetails();
         break;
 
     case 'delete_user':
-        $adminController->deleteUser();          // charge $user + vérification dans le contrôleur
+        $adminController->deleteUser();
         break;
 
     case 'delete_user_confirm':
         $adminController->deleteUserConfirm();
         break;
-case 'ajax_forgot_password':
-    header('Content-Type: application/json');
-    require_once 'models/User.php';
-    $database = new Database();
-    $db = $database->getConnection();
-    $user = new User($db);
-    $email = $_POST['email'] ?? '';
-    if (!$user->emailExists($email)) {
-        echo json_encode(['success' => false, 'message' => 'Cet email n\'existe pas.']);
-        exit;
-    }
-    $token = bin2hex(random_bytes(32));
-    $expiration = date('Y-m-d H:i:s', strtotime('+1 hour'));
-    $db->prepare("DELETE FROM password_reset WHERE email = ?")->execute([$email]);
-    $stmt = $db->prepare("INSERT INTO password_reset (email, token, expiration) VALUES (?, ?, ?)");
-    $stmt->execute([$email, $token, $expiration]);
-    echo json_encode(['success' => true, 'message' => 'Un lien de réinitialisation a été généré.', 'token' => $token]);
-    exit;
 
-case 'ajax_reset_password':
-    header('Content-Type: application/json');
-    require_once 'models/User.php';
-    $database = new Database();
-    $db = $database->getConnection();
-    $token = $_POST['token'] ?? '';
-    $newPassword = $_POST['password'] ?? '';
-    if (strlen($newPassword) < 6) {
-        echo json_encode(['success' => false, 'message' => 'Mot de passe trop court (minimum 6 caractères).']);
-        exit;
-    }
-    $stmt = $db->prepare("SELECT * FROM password_reset WHERE token = :token AND expiration > NOW() AND used = 0");
-    $stmt->bindParam(':token', $token);
-    $stmt->execute();
-    $reset = $stmt->fetch(PDO::FETCH_ASSOC);
-    if (!$reset) {
-        echo json_encode(['success' => false, 'message' => 'Lien invalide ou expiré.']);
-        exit;
-    }
-    $user = new User($db);
-    $user->updatePassword($reset['email'], $newPassword);
-    $update = $db->prepare("UPDATE password_reset SET used = 1 WHERE token = :token");
-    $update->bindParam(':token', $token);
-    $update->execute();
-    echo json_encode(['success' => true, 'message' => 'Mot de passe modifié avec succès !']);
-    exit;
+    // ── AJAX (appels depuis les modales) ──────────────────────────────────────
+    case 'ajax_forgot_password':
+        $userController->ajaxForgotPassword();
+        break;
+
+    case 'ajax_reset_password':
+        $userController->ajaxResetPassword();
+        break;
+
     default:
         include 'views/Frontoffice/home.php';
 }
