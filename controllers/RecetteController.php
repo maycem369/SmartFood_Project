@@ -26,24 +26,9 @@ $this->validate($_POST['id']);
 
 }
 
-/* ================= ADD RECETTE + VALIDATION ================= */
+/* ================= ADD RECETTE ================= */
 
 function addRecette($data){
-
-if(empty($data['nom'])){
-echo "Nom obligatoire";
-return;
-}
-
-if(empty($data['description'])){
-echo "Description obligatoire";
-return;
-}
-
-if(!isset($data['ingredients'])){
-echo "Choisir au moins un ingredient";
-return;
-}
 
 $db=Database::connect();
 
@@ -58,8 +43,10 @@ $data['description']
 
 $idrecette = $db->lastInsertId();
 
+if(isset($data['ingredients'])){
 foreach($data['ingredients'] as $iding){
 $this->addIngredientToRecette($idrecette,$iding);
+}
 }
 
 }
@@ -144,11 +131,6 @@ $db->prepare("DELETE FROM recettes WHERE idrecette=?")
 /* ================= UPDATE ================= */
 
 function update($id,$nom){
-
-if(empty($nom)){
-echo "Nom obligatoire";
-return;
-}
 
 $db=Database::connect();
 

@@ -6,6 +6,7 @@ $c = new RecetteController();
 $ic = new IngredientController();
 
 $c->handleRequest();
+$ic->handleRequest();
 
 $recettes = $c->getAll();
 $ingredients = $ic->getAll();
@@ -40,13 +41,20 @@ Smart<span style="color:#FF8C00;">Food</span>
 
 <h2 style="color:#2D6A4F;">Back Office - Gestion Recettes</h2>
 
+<table width="100%">
+<tr>
+
+<!-- AJOUT RECETTE -->
+<td width="50%" valign="top">
+
 <h3>Ajouter Recette</h3>
 
-<form method="POST">
-Nom : <input type="text" name="nom"><br><br>
+<form method="POST" id="formRecette">
+
+Nom : <input type="text" name="nom" id="nom"><br><br>
 
 Description : <br>
-<textarea name="description"></textarea><br><br>
+<textarea name="description" id="description"></textarea><br><br>
 
 Ingrédients : <br>
 
@@ -67,6 +75,32 @@ Ajouter
 </button>
 
 </form>
+
+</td>
+
+<!-- AJOUT INGREDIENT -->
+<td width="50%" valign="top">
+
+<h3>Ajouter Ingredient</h3>
+
+<form method="POST" id="formIngredient">
+
+Nom Ingredient :
+<input type="text" name="nomIngredient" id="nomIngredient">
+
+<br><br>
+
+<button name="addIngredient"
+style="background:#FF8C00;color:white;padding:8px;">
+Ajouter Ingredient
+</button>
+
+</form>
+
+</td>
+
+</tr>
+</table>
 
 <hr>
 
@@ -130,6 +164,48 @@ Valider
 </td>
 </tr>
 </table>
+
+<!-- CONTROLE DE SAISIE ALONE -->
+<script>
+
+document.getElementById("formRecette").onsubmit=function(){
+
+let nom=document.getElementById("nom").value;
+let desc=document.getElementById("description").value;
+
+if(nom==""){
+alert("Nom obligatoire");
+return false;
+}
+
+if(desc==""){
+alert("Description obligatoire");
+return false;
+}
+
+let ingredients=document.querySelectorAll('input[name="ingredients[]"]:checked');
+
+if(ingredients.length==0){
+alert("Choisir au moins un ingredient");
+return false;
+}
+
+return true;
+}
+
+document.getElementById("formIngredient").onsubmit=function(){
+
+let nom=document.getElementById("nomIngredient").value;
+
+if(nom==""){
+alert("Nom ingredient obligatoire");
+return false;
+}
+
+return true;
+}
+
+</script>
 
 </body>
 </html>
