@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-<<<<<<< HEAD
 <div class="sidebar admin-sidebar">
     <div class="logo"><h1 style="color:white;">Smart<span>Food</span></h1></div>
     <ul class="nav-menu">
@@ -37,39 +36,6 @@
 
 <div class="main-content">
     <h1 class="page-title">👥 <span data-i18n="users_title">Gestion des utilisateurs</span></h1>
-=======
-<!-- Sidebar Pro -->
-<div class="sidebar admin-sidebar">
-    <div class="logo">
-        <h1 style="color:white;">Smart<span>Food</span> </h1>
-    </div>
-    <ul class="nav-menu">
-        <li><a href="index.php?action=admin_dashboard">
-            <i class="fas fa-chart-line"></i> <span data-i18n="admin_nav_dashboard">Vue d'ensemble</span>
-        </a></li>
-        <li><a href="index.php?action=users_list" class="active">
-            <i class="fas fa-user-shield"></i> <span data-i18n="admin_nav_users">Utilisateurs</span>
-        </a></li>
-        <li><a href="#">
-            <i class="fas fa-scroll"></i> <span data-i18n="admin_nav_recipes">Recettes & Menus</span>
-        </a></li>
-        <li><a href="#">
-            <i class="fas fa-database"></i> <span data-i18n="admin_nav_ingredients">Ingrédients</span>
-        </a></li>
-        <li><a href="index.php?action=admin_configuration">
-            <i class="fas fa-cog"></i> <span data-i18n="admin_nav_config">Configuration</span>
-        </a></li>
-    </ul>
-    <div class="switch-mode" style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
-        <a href="index.php?action=logout" class="admin-link" style="color: var(--text-sidebar);">
-            <i class="fas fa-sign-out-alt"></i> <span data-i18n="nav_logout">Déconnexion</span>
-        </a>
-    </div>
-</div>
-
-<div class="main-content">
-    <h1 class="page-title">👥 Gestion des utilisateurs</h1>
->>>>>>> 318f1fe5f5c4954ba1f9f36cc032e57a5bff4080
 
     <?php if(isset($_SESSION['success'])): ?>
         <div class="message success"><?= $_SESSION['success']; unset($_SESSION['success']); ?></div>
@@ -161,11 +127,3 @@ document.getElementById('searchInput').addEventListener('keyup', function() {
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-

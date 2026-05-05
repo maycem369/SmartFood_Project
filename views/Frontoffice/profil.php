@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -24,11 +24,7 @@
 </nav>
 
 <div class="front-main-content">
-<<<<<<< HEAD
     <h1 style="color:var(--front-accent); margin-bottom:25px;" data-i18n="profile_title">Mon Profil</h1>
-=======
-    <h1 style="color:var(--front-accent); margin-bottom:25px;" data-i18n="prof_title">Mon Profil</h1>
->>>>>>> 318f1fe5f5c4954ba1f9f36cc032e57a5bff4080
     <div class="card">
         <div class="profile-header">
             <img src="assets/uploads/<?= htmlspecialchars($profilData['photo'] ?? 'default-avatar.png') ?>"
@@ -37,11 +33,7 @@
             <div>
                 <h2><?= htmlspecialchars($userData['prenom'] ?? '') ?> <?= htmlspecialchars($userData['nom'] ?? '') ?></h2>
                 <p><?= htmlspecialchars($userData['email'] ?? '') ?></p>
-<<<<<<< HEAD
                 <span class="role-badge role-user" data-i18n="role_user">Utilisateur</span>
-=======
-                <span class="role-badge role-user" data-i18n="dash_user_role">Utilisateur</span>
->>>>>>> 318f1fe5f5c4954ba1f9f36cc032e57a5bff4080
                 <?php if ($imc): ?>
                     <div style="margin-top:8px;">
                         <span data-i18n="imc_current">IMC</span> : <strong><?= htmlspecialchars($imc) ?></strong>
@@ -51,7 +43,6 @@
             </div>
         </div>
 
-<<<<<<< HEAD
         <h3 data-i18n="health_info_title">Informations santé &amp; nutrition</h3>
         <div class="info-grid">
             <div class="info-item">
@@ -66,38 +57,17 @@
             </div>
             <div class="info-item">
                 <strong data-i18n="weight_label">Poids</strong>
-=======
-        <h3 data-i18n="prof_health_info">Informations santé &amp; nutrition</h3>
-        <div class="info-grid">
-            <div class="info-item">
-                <strong data-i18n="prof_age">Âge</strong>
-                <span class="info-value">
-                    <?= $profilData['age'] ? htmlspecialchars($profilData['age']) . ' <span data-i18n="prof_years">ans</span>' : '<span data-i18n="dash_undefined">Non renseigné</span>' ?>
-                </span>
-            </div>
-            <div class="info-item">
-                <strong data-i18n="prof_sex">Sexe</strong>
-                <span class="info-value"><?= htmlspecialchars($profilData['sexe'] ?? 'Non renseigné') ?></span>
-            </div>
-            <div class="info-item">
-                <strong data-i18n="prof_weight">Poids</strong>
->>>>>>> 318f1fe5f5c4954ba1f9f36cc032e57a5bff4080
                 <span class="info-value">
                     <?= $profilData['poids'] ? htmlspecialchars($profilData['poids']) . ' kg' : '-' ?>
                 </span>
             </div>
             <div class="info-item">
-<<<<<<< HEAD
                 <strong data-i18n="height_label">Taille</strong>
-=======
-                <strong data-i18n="prof_height">Taille</strong>
->>>>>>> 318f1fe5f5c4954ba1f9f36cc032e57a5bff4080
                 <span class="info-value">
                     <?= $profilData['taille'] ? htmlspecialchars($profilData['taille']) . ' cm' : '-' ?>
                 </span>
             </div>
             <div class="info-item">
-<<<<<<< HEAD
                 <strong data-i18n="objective_label">Objectif</strong>
                 <span class="info-value"><?= htmlspecialchars($profilData['objectif'] ?? '') ?><span style="display:<?= empty($profilData['objectif']) ? 'inline' : 'none' ?>" data-i18n="not_filled">Non renseigné</span></span>
             </div>
@@ -109,25 +79,11 @@
                 <strong data-i18n="allergies_label">Allergies</strong>
                 <span class="info-value">
                     <?= $profilData['allergies'] ? htmlspecialchars($profilData['allergies']) : '<span data-i18n="no_allergies">Aucune</span>' ?>
-=======
-                <strong data-i18n="dash_goal">Objectif</strong>
-                <span class="info-value"><?= htmlspecialchars($profilData['objectif'] ?? 'Non renseigné') ?></span>
-            </div>
-            <div class="info-item">
-                <strong data-i18n="dash_activity">Activité</strong>
-                <span class="info-value"><?= htmlspecialchars($profilData['niveau_activite'] ?? 'Non renseigné') ?></span>
-            </div>
-            <div class="info-item" style="grid-column: span 2;">
-                <strong data-i18n="prof_allergies">Allergies</strong>
-                <span class="info-value">
-                    <?= $profilData['allergies'] ? htmlspecialchars($profilData['allergies']) : '<span data-i18n="prof_none">Aucune</span>' ?>
->>>>>>> 318f1fe5f5c4954ba1f9f36cc032e57a5bff4080
                 </span>
             </div>
         </div>
 
         <div style="margin-top:40px;">
-<<<<<<< HEAD
             <h3>🔐 Face ID</h3>
             <div style="padding: 20px; border-radius: 12px; <?= $hasFaceId ? 'background: rgba(76, 175, 80, 0.1); border: 1px solid rgba(76, 175, 80, 0.3);' : 'background: rgba(255, 152, 0, 0.1); border: 1px solid rgba(255, 152, 0, 0.3);' ?>">
                 <p style="margin: 0 0 12px 0;">
@@ -136,31 +92,16 @@
                     </span>
                 </p>
                 <a href="index.php?action=face_register" class="btn btn-orange" data-i18n="<?= $hasFaceId ? 'manage_face' : 'enroll_face' ?>">
-=======
-            <h3 data-i18n="prof_faceid_title">🔐 Face ID</h3>
-            <div style="padding: 20px; border-radius: 12px; <?= $hasFaceId ? 'background: rgba(76, 175, 80, 0.1); border: 1px solid rgba(76, 175, 80, 0.3);' : 'background: rgba(255, 152, 0, 0.1); border: 1px solid rgba(255, 152, 0, 0.3);' ?>">
-                <p style="margin: 0 0 12px 0;" data-i18n="<?= $hasFaceId ? 'prof_faceid_active' : 'prof_faceid_none' ?>">
-                    <?= $hasFaceId ? '✅ Face ID activé - Vous pouvez vous connecter avec votre visage !' : '⚠️ Aucun Face ID enregistré' ?>
-                </p>
-                <a href="index.php?action=face_register" class="btn btn-orange" data-i18n="<?= $hasFaceId ? 'prof_faceid_manage' : 'prof_faceid_add' ?>">
->>>>>>> 318f1fe5f5c4954ba1f9f36cc032e57a5bff4080
                     <?= $hasFaceId ? '🪪 Gérer Face ID' : '📷 Enregistrer mon visage' ?>
                 </a>
             </div>
         </div>
-<<<<<<< HEAD
 
         <div style="margin-top:40px;">
             <a href="index.php?action=edit_profile" class="btn btn-orange">✏️ <span data-i18n="edit_profile_title">Modifier mes informations</span></a>
-=======
-        
-        <div style="margin-top:40px;">
-            <a href="index.php?action=edit_profile" class="btn btn-orange" data-i18n="prof_edit_btn">✏️ Modifier mes informations</a>
->>>>>>> 318f1fe5f5c4954ba1f9f36cc032e57a5bff4080
         </div>
     </div>
 </div>
 <script src="assets/js/validation.js"></script>
 </body>
 </html>
-

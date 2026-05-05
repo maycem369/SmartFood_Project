@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 ﻿﻿<!DOCTYPE html>
-=======
-﻿<!DOCTYPE html>
->>>>>>> 318f1fe5f5c4954ba1f9f36cc032e57a5bff4080
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -311,12 +307,4 @@
     };
 </script>
 </body>
-<<<<<<< HEAD
 </html>
-=======
-</html>
-
-
-
-
->>>>>>> 318f1fe5f5c4954ba1f9f36cc032e57a5bff4080

@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 <!DOCTYPE html>
-=======
-﻿<!DOCTYPE html>
->>>>>>> 318f1fe5f5c4954ba1f9f36cc032e57a5bff4080
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -138,19 +134,11 @@
         <div class="param-sidebar-card">
             <h3>Paramètres</h3>
             <ul>
-<<<<<<< HEAD
                 <li><a href="index.php?action=profil">👤 Mon Profil</a></li>
                 <li><a href="index.php?action=edit_profile">✏️ Modifier Profil</a></li>
                 <li><a href="index.php?action=face_register" class="active">🪪 Face ID</a></li>
                 <li><a href="index.php?action=change_password">🔑 Mot de passe</a></li>
                 <li><a href="index.php?action=settings" >🌐 Apparence & Langue</a></li>
-=======
-                <li><a href="index.php?action=profil"           data-i18n="sidebar_profile">👤 Mon Profil</a></li>
-                <li><a href="index.php?action=edit_profile"     data-i18n="sidebar_edit">✏️ Modifier Profil</a></li>
-                <li><a href="index.php?action=face_register" class="active" data-i18n="sidebar_faceid">🪪 Face ID</a></li>
-                <li><a href="index.php?action=change_password"  data-i18n="sidebar_password">🔑 Mot de passe</a></li>
-                <li><a href="index.php?action=settings"         data-i18n="sidebar_appearance">🌐 Apparence & Langue</a></li>
->>>>>>> 318f1fe5f5c4954ba1f9f36cc032e57a5bff4080
             </ul>
         </div>
     </div>
@@ -428,9 +416,3 @@ function stopCamera() {
 </script>
 </body>
 </html>
-<<<<<<< HEAD
-=======
-
-
-
->>>>>>> 318f1fe5f5c4954ba1f9f36cc032e57a5bff4080

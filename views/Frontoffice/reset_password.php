@@ -1,14 +1,17 @@
-﻿<!DOCTYPE html>
+<?php
+$token = $_GET['token'] ?? '';
+if (!$token) {
+    header("Location: index.php");
+    exit();
+}
+?>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <title>Nouveau mot de passe - SmartFood</title>
     <link rel="stylesheet" href="assets/css/style.css">
     <script src="assets/js/settings.js"></script>
-<<<<<<< HEAD
-=======
-    <script src="assets/js/chatbot.js" defer></script>
->>>>>>> 318f1fe5f5c4954ba1f9f36cc032e57a5bff4080
 </head>
 <body>
 <div class="login-container">
@@ -17,15 +20,11 @@
         <div class="message error"><?= $_SESSION['error']; unset($_SESSION['error']); ?></div>
     <?php endif; ?>
     <form method="POST" action="index.php?action=reset_password&token=<?= urlencode($token) ?>" novalidate>
-        <div class="form-group"><label>Nouveau mot de passe</label><input type="password" name="password" id="reset-pwd" autocomplete="new-password"></div>
-        <div class="form-group"><label>Confirmer</label><input type="password" name="confirm_password" id="reset-confirm" autocomplete="new-password"></div>
+        <div class="form-group"><label>Nouveau mot de passe</label><input type="password" name="password" required></div>
+        <div class="form-group"><label>Confirmer</label><input type="password" name="confirm_password" required></div>
         <button type="submit" class="btn btn-primary">Changer</button>
     </form>
 </div>
 <script src="assets/js/validation.js"></script>
 </body>
 </html>
-
-
-
-
