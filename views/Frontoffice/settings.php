@@ -68,7 +68,11 @@
                         <div class="toggle-icon" id="themeIcon">🌙</div>
                         <div>
                             <div class="toggle-label" data-i18n="dark_mode_title">Mode Nuit</div>
+<<<<<<< HEAD
                             <div class="toggle-sub"   data-i18n="dark_mode_desc">
+=======
+                            <div class="toggle-sub" data-i18n="dark_mode_desc">
+>>>>>>> 318f1fe5f5c4954ba1f9f36cc032e57a5bff4080
                                 Réduisez la fatigue oculaire avec un thème sombre
                             </div>
                         </div>
@@ -142,6 +146,7 @@
 </div>
 
 <script>
+<<<<<<< HEAD
 // ════════════════════════════════════════════════════════════════
 // STATE — lu depuis localStorage via SmartFoodSettings
 // ════════════════════════════════════════════════════════════════
@@ -156,6 +161,17 @@ window.addEventListener('DOMContentLoaded', () => {
     // ── Thème ──
     const toggle = document.getElementById('darkModeToggle');
     toggle.checked = (currentTheme === 'dark');   // ← correction : reflète l'état réel
+=======
+// ── État courant ────────────────────────────────────────────
+let currentLang  = localStorage.getItem('sf_lang')  || 'fr';
+let currentTheme = localStorage.getItem('sf_theme') || 'light';
+
+// ── Init interface ──────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+    // Thème
+    const toggle = document.getElementById('darkModeToggle');
+    toggle.checked = (currentTheme === 'dark');
+>>>>>>> 318f1fe5f5c4954ba1f9f36cc032e57a5bff4080
     updateThemeUI(currentTheme);
 
     toggle.addEventListener('change', () => {
@@ -164,6 +180,7 @@ window.addEventListener('DOMContentLoaded', () => {
         updateThemeUI(currentTheme);
     });
 
+<<<<<<< HEAD
     // ── Langue ──
     updateLangButtons(currentLang);
     // La langue est déjà appliquée par settings.js au chargement,
@@ -200,23 +217,60 @@ function updateThemeUI(theme) {
         icon.textContent    = '🌙';
         emoji.textContent   = '🌙';
         preview.textContent = (previewTexts.dark[currentLang] || previewTexts.dark.fr);
+=======
+    // Langue
+    updateLangButtons(currentLang);
+    SmartFoodSettings.applyLanguage(currentLang);
+});
+
+// ── UI du thème ─────────────────────────────────────────────
+function updateThemeUI(theme) {
+    const icon    = document.getElementById('themeIcon');
+    const emoji   = document.getElementById('previewEmoji');
+    const preview = document.getElementById('previewText');
+    const label   = document.getElementById('darkModeLabel');
+    const t = SmartFoodSettings.TRANSLATIONS[currentLang] || SmartFoodSettings.TRANSLATIONS.fr;
+
+    if (theme === 'dark') {
+        icon.textContent    = '🌙';
+        emoji.textContent   = '🌙';
+        preview.textContent = (currentLang === 'ar') ? 'الوضع الليلي نشط — واجهة داكنة' :
+                              (currentLang === 'zh') ? '夜间模式已启用 — 深色界面' :
+                              (currentLang === 'en') ? 'Dark mode active — dark interface' :
+                              'Mode nuit actif — interface sombre';
+>>>>>>> 318f1fe5f5c4954ba1f9f36cc032e57a5bff4080
         label.textContent   = t.dark_mode_on;
     } else {
         icon.textContent    = '☀️';
         emoji.textContent   = '☀️';
+<<<<<<< HEAD
         preview.textContent = (previewTexts.light[currentLang] || previewTexts.light.fr);
+=======
+        preview.textContent = (currentLang === 'ar') ? 'الوضع الفاتح نشط — واجهة مضيئة' :
+                              (currentLang === 'zh') ? '浅色模式已启用 — 明亮界面' :
+                              (currentLang === 'en') ? 'Light mode active — bright interface' :
+                              'Mode clair actif — interface lumineuse';
+>>>>>>> 318f1fe5f5c4954ba1f9f36cc032e57a5bff4080
         label.textContent   = t.dark_mode_off;
     }
 }
 
+<<<<<<< HEAD
 // ════════════════════════════════════════════════════════════════
 // UI LANGUE
 // ════════════════════════════════════════════════════════════════
+=======
+// ── Sélection langue ────────────────────────────────────────
+>>>>>>> 318f1fe5f5c4954ba1f9f36cc032e57a5bff4080
 function selectLang(lang) {
     currentLang = lang;
     SmartFoodSettings.applyLanguage(lang);
     updateLangButtons(lang);
+<<<<<<< HEAD
     updateThemeUI(currentTheme);   // re-render le texte de preview dans la bonne langue
+=======
+    updateThemeUI(currentTheme); // re-render preview text
+>>>>>>> 318f1fe5f5c4954ba1f9f36cc032e57a5bff4080
 }
 
 function updateLangButtons(lang) {
@@ -225,19 +279,32 @@ function updateLangButtons(lang) {
     });
 }
 
+<<<<<<< HEAD
 // ════════════════════════════════════════════════════════════════
 // SAUVEGARDE
 // ════════════════════════════════════════════════════════════════
+=======
+// ── Sauvegarde ──────────────────────────────────────────────
+>>>>>>> 318f1fe5f5c4954ba1f9f36cc032e57a5bff4080
 function saveSettings() {
     SmartFoodSettings.applyTheme(currentTheme);
     SmartFoodSettings.applyLanguage(currentLang);
 
     const fb = document.getElementById('saveFeedback');
+<<<<<<< HEAD
     const t  = SmartFoodSettings.TRANSLATIONS[currentLang] || SmartFoodSettings.TRANSLATIONS.fr;
     fb.textContent = t.saved_msg || '✅ Paramètres sauvegardés !';
+=======
+>>>>>>> 318f1fe5f5c4954ba1f9f36cc032e57a5bff4080
     fb.classList.add('show');
     setTimeout(() => fb.classList.remove('show'), 3000);
 }
 </script>
 </body>
+<<<<<<< HEAD
 </html>
+=======
+</html>
+
+
+>>>>>>> 318f1fe5f5c4954ba1f9f36cc032e57a5bff4080

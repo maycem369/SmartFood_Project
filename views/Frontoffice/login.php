@@ -1,10 +1,14 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <title>Connexion - SmartFood</title>
     <link rel="stylesheet" href="assets/css/style.css">
     <script src="assets/js/settings.js"></script>
+<<<<<<< HEAD
+=======
+    <script src="assets/js/chatbot.js" defer></script>
+>>>>>>> 318f1fe5f5c4954ba1f9f36cc032e57a5bff4080
 </head>
 <body>
 <div class="login-container">
@@ -20,6 +24,7 @@
         <div class="message success"><?= $_SESSION['info']; unset($_SESSION['info']); ?></div>
     <?php endif; ?>
     <form method="POST" action="index.php?action=login" novalidate>
+<<<<<<< HEAD
         <div class="form-group">
             <label data-i18n="auth_email">Email</label>
             <input type="email" name="email" required>
@@ -34,8 +39,20 @@
         <p><a href="index.php?action=login_face" data-i18n="auth_faceid">🔐 Connexion par visage</a></p>
         <p><a href="index.php?action=forgot_password" data-i18n="auth_forgot">Mot de passe oublié ?</a></p>
         <p><a href="index.php?action=register" data-i18n="auth_no_account">Pas de compte ? S'inscrire</a></p>
+=======
+        <div class="form-group"><label data-i18n="auth_email">Email</label><input type="text" name="email" id="login-email" autocomplete="email"></div>
+        <div class="form-group"><label data-i18n="auth_pwd">Mot de passe</label><input type="password" name="password" id="login-pwd" autocomplete="current-password"></div>
+        <button type="submit" class="btn btn-primary" data-i18n="auth_login">Se connecter</button>
+    </form>
+    <div class="links">
+        <p><a href="index.php?action=login_face">🔐 Connexion par visage</a></p>
+        <p><a href="index.php?action=forgot_password">Mot de passe oublié ?</a></p>
+        <p><span data-i18n="auth_no_account">Pas de compte ? S'inscrire</span></p>
+>>>>>>> 318f1fe5f5c4954ba1f9f36cc032e57a5bff4080
     </div>
 </div>
 <script src="assets/js/validation.js"></script>
 </body>
 </html>
+
+
