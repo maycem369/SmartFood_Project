@@ -160,6 +160,12 @@ switch ($action) {
     case 'delete_user_confirm':
         $adminController->deleteUserConfirm();
         break;
+    case 'admin_configuration':
+        $adminController->configuration();
+        break;
+    case 'ajax_update_password':
+        $userController->ajaxUpdatePassword();
+        break;
 
     default:
         include 'views/Frontoffice/home.php';

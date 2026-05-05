@@ -1,11 +1,13 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartFood – Mangez sain, gaspillez moins</title>
+    <title>SmartFood – L'intelligence au service de votre nutrition</title>
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="assets/js/settings.js"></script>
+    <script src="assets/js/chatbot.js" defer></script>
     <style>
         /* Hero section styles */
         .hero-home {
@@ -133,25 +135,40 @@
 
 <!-- Navigation -->
 <nav class="home-nav">
-    <div class="logo">Smart<span>Food</span></div>
+    <div class="logo">
+        <img src="assets/img/logo.png" alt="SmartFood Logo" style="height: 40px; margin-right: 12px; vertical-align: middle;">
+        Smart<span>Food</span>
+    </div>
     <div class="home-nav-links">
-        <a href="#" id="loginBtn" class="btn btn-secondary">Connexion</a>
-        <a href="#" id="registerBtn" class="btn btn-orange">Inscription</a>
+        <a href="#" id="loginBtn" class="btn btn-secondary" data-i18n="auth_login">Connexion</a>
+        <a href="#" id="registerBtn" class="btn btn-orange" data-i18n="auth_register">Inscription</a>
     </div>
 </nav>
 
 <!-- Hero Section -->
 <section class="hero-home">
     <div class="hero-content">
-        <h1>Mangez sain,<br>gaspillez moins</h1>
-        <p>SmartFood utilise l’IA pour vous proposer des recettes anti-gaspillage personnalisées, et vous connecter en un clin d'œil avec Face ID.</p>
+        <h1 data-i18n="home_hero_title">Mangez sain,<br>gaspillez moins</h1>
+        <p data-i18n="home_hero_desc">SmartFood utilise l’intelligence artificielle pour vous proposer des recettes anti-gaspillage ultra-personnalisées et vous connecter en un clin d'œil avec Face ID.</p>
         <div class="hero-buttons">
-            <a href="#" id="heroRegisterBtn" class="btn btn-orange">Commencez gratuitement →</a>
-            <a href="#" id="heroLoginBtn" class="btn btn-secondary">Se connecter</a>
+            <a href="#" id="heroRegisterBtn" class="btn btn-orange"><span data-i18n="home_btn_start">Commencez gratuitement</span> <i class="fas fa-arrow-right" style="margin-left: 8px;"></i></a>
+            <a href="#" id="heroLoginBtn" class="btn btn-secondary" data-i18n="auth_login">Se connecter</a>
         </div>
     </div>
-    <div class="hero-image">🍽️</div>
+    <div class="hero-image-wrapper" style="position: relative; animation: float 6s ease-in-out infinite;">
+        <img src="assets/img/logo.png" alt="SmartFood" style="width: 350px; filter: drop-shadow(0 20px 30px rgba(0,0,0,0.15));">
+        <div style="position: absolute; top: -20px; right: -20px; background: white; padding: 12px; border-radius: 50%; box-shadow: var(--shadow-md); font-size: 2rem;">🥗</div>
+        <div style="position: absolute; bottom: -20px; left: -20px; background: white; padding: 12px; border-radius: 50%; box-shadow: var(--shadow-md); font-size: 2rem;">🥑</div>
+    </div>
 </section>
+
+<style>
+    @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-20px); }
+        100% { transform: translateY(0px); }
+    }
+</style>
 
 <!-- Features Section -->
 <section class="home-features">
@@ -176,22 +193,22 @@
 <div id="loginModal" class="modal">
     <div class="modal-content">
         <span class="close-modal" data-modal="loginModal">&times;</span>
-        <h2>Connexion</h2>
+        <h2 data-i18n="auth_login">Connexion</h2>
         <form id="loginForm" method="POST" action="index.php?action=login">
-            <div class="form-group"><label>Email</label><input type="email" name="email" required></div>
-            <div class="form-group"><label>Mot de passe</label><input type="password" name="password" required></div>
-            <button type="submit" class="btn btn-primary">Se connecter</button>
+            <div class="form-group"><label data-i18n="auth_email">Email</label><input type="email" name="email" required></div>
+            <div class="form-group"><label data-i18n="auth_pwd">Mot de passe</label><input type="password" name="password" required></div>
+            <button type="submit" class="btn btn-primary" data-i18n="auth_login">Se connecter</button>
         </form>
         
         <div class="modal-divider"><span>OU</span></div>
         
-        <a href="index.php?action=login_face" class="btn btn-secondary" style="width: 100%; justify-content: center; margin-bottom: 20px;">
+        <a href="index.php?action=login_face" class="btn btn-secondary" style="width: 100%; justify-content: center; margin-bottom: 20px;" data-i18n="auth_faceid">
             🪪 Connexion par visage
         </a>
         
         <div class="modal-footer">
-            <a href="#" id="forgotPasswordLink">Mot de passe oublié ?</a><br>
-            <a href="#" id="switchToRegister">Pas de compte ? S'inscrire</a>
+            <a href="#" id="forgotPasswordLink" data-i18n="auth_forgot">Mot de passe oublié ?</a><br>
+            <a href="#" id="switchToRegister" data-i18n="auth_no_account">Pas de compte ? S'inscrire</a>
         </div>
     </div>
 </div>
@@ -200,16 +217,16 @@
 <div id="registerModal" class="modal">
     <div class="modal-content">
         <span class="close-modal" data-modal="registerModal">&times;</span>
-        <h2>Inscription</h2>
+        <h2 data-i18n="auth_register">Inscription</h2>
         <form id="registerForm" method="POST" action="index.php?action=register">
             <div class="two-columns">
                 <div class="form-group"><label>Nom</label><input type="text" name="nom" required></div>
                 <div class="form-group"><label>Prénom</label><input type="text" name="prenom" required></div>
             </div>
-            <div class="form-group"><label>Email</label><input type="email" name="email" required></div>
-            <div class="form-group"><label>Mot de passe</label><input type="password" name="password" required></div>
-            <div class="form-group"><label>Confirmer</label><input type="password" name="confirm_password" required></div>
-            <button type="submit" class="btn btn-primary">S'inscrire</button>
+            <div class="form-group"><label data-i18n="auth_email">Email</label><input type="email" name="email" required></div>
+            <div class="form-group"><label data-i18n="auth_pwd">Mot de passe</label><input type="password" name="password" required></div>
+            <div class="form-group"><label data-i18n="auth_confirm">Confirmer</label><input type="password" name="confirm_password" required></div>
+            <button type="submit" class="btn btn-primary" data-i18n="auth_register">S'inscrire</button>
         </form>
         
         <div class="modal-divider"><span>PLUS TARD</span></div>
@@ -219,7 +236,7 @@
         </p>
         
         <div class="modal-footer">
-            <a href="#" id="switchToLogin">Déjà inscrit ? Se connecter</a>
+            <a href="#" id="switchToLogin" data-i18n="auth_has_account">Déjà inscrit ? Se connecter</a>
         </div>
     </div>
 </div>

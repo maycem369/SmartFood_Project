@@ -1,33 +1,38 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
+    <script src="assets/js/settings.js"></script>
     <meta charset="UTF-8">
     <title>Gestion utilisateurs - SmartFood</title>
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-<div class="sidebar">
+<!-- Sidebar Pro -->
+<div class="sidebar admin-sidebar">
     <div class="logo">
-        <h1>Smart<span>Food</span></h1>
+        <h1 style="color:white;">Smart<span>Food</span> </h1>
     </div>
     <ul class="nav-menu">
         <li><a href="index.php?action=admin_dashboard">
-            <i class="fas fa-tachometer-alt"></i> Dashboard
+            <i class="fas fa-chart-line"></i> <span data-i18n="admin_nav_dashboard">Vue d'ensemble</span>
         </a></li>
         <li><a href="index.php?action=users_list" class="active">
-            <i class="fas fa-users"></i> Utilisateurs
+            <i class="fas fa-user-shield"></i> <span data-i18n="admin_nav_users">Utilisateurs</span>
         </a></li>
         <li><a href="#">
-            <i class="fas fa-utensils"></i> Recettes
+            <i class="fas fa-scroll"></i> <span data-i18n="admin_nav_recipes">Recettes & Menus</span>
         </a></li>
         <li><a href="#">
-            <i class="fas fa-carrot"></i> Ingrédients
+            <i class="fas fa-database"></i> <span data-i18n="admin_nav_ingredients">Ingrédients</span>
+        </a></li>
+        <li><a href="index.php?action=admin_configuration">
+            <i class="fas fa-cog"></i> <span data-i18n="admin_nav_config">Configuration</span>
         </a></li>
     </ul>
-    <div class="switch-mode">
-        <a href="index.php?action=home" class="admin-link">
-            ← Retour à l'accueil
+    <div class="switch-mode" style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
+        <a href="index.php?action=logout" class="admin-link" style="color: var(--text-sidebar);">
+            <i class="fas fa-sign-out-alt"></i> <span data-i18n="nav_logout">Déconnexion</span>
         </a>
     </div>
 </div>
@@ -115,3 +120,11 @@ document.getElementById('searchInput').addEventListener('keyup', function() {
 </script>
 </body>
 </html>
+
+
+
+
+
+
+
+

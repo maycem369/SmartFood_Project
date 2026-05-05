@@ -1,9 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Connexion par visage - SmartFood</title>
+    <title>Connexion Face ID – SmartFood</title>
     <link rel="stylesheet" href="assets/css/style.css">
+    <script src="assets/js/settings.js"></script>
+    <script src="assets/js/chatbot.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
     <style>
         body { background: #f5f5f5; }
@@ -96,7 +98,7 @@
 <div class="face-login-wrap">
     <div class="face-login-card">
         <div style="font-size:2.5rem;margin-bottom:10px;">🪪</div>
-        <h2>Connexion Face ID</h2>
+        <h2 data-i18n="auth_faceid">Connexion Face ID</h2>
         <p class="sub">Placez votre visage devant la caméra</p>
 
         <div class="camera-circle">
@@ -122,7 +124,7 @@
             📷 Démarrer la reconnaissance
         </button>
 
-        <a class="back-link" href="index.php?action=login">← Retour à la connexion classique</a>
+        <a class="back-link" href="index.php?action=login">← Retour à la <span data-i18n="auth_login">Connexion classique</span></a>
     </div>
 </div>
 
@@ -319,3 +321,6 @@ loadModels();
 </script>
 </body>
 </html>
+
+
+

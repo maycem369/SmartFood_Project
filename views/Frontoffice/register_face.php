@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="assets/js/settings.js"></script>
+    <script src="assets/js/chatbot.js" defer></script>
     <style>
         .faceid-container { max-width: 680px; padding: 0; }
         .faceid-card {
@@ -115,15 +116,15 @@
 <nav class="front-navbar">
     <div class="logo">Smart<span>Food</span></div>
     <ul class="front-nav-links">
-        <li><a href="index.php?action=dashboard_user">🏠 Tableau de bord</a></li>
-        <li><a href="index.php?action=profil">👤 Mon Profil</a></li>
-        <li><a href="#">📋 Recettes</a></li>
-        <li><a href="#">🥗 Nutrition</a></li>
-        <li><a href="index.php?action=profil" class="active">⚙️ Paramètres</a></li>
+        <li><a href="index.php?action=dashboard_user" data-i18n="nav_dashboard">🏠 Tableau de bord</a></li>
+        <li><a href="index.php?action=profil" data-i18n="nav_profile">👤 Mon Profil</a></li>
+        <li><a href="#" data-i18n="nav_recipes">📋 Recettes</a></li>
+        <li><a href="#" data-i18n="nav_nutrition">🥗 Nutrition</a></li>
+        <li><a href="index.php?action=settings" class="active" data-i18n="nav_settings">⚙️ Paramètres</a></li>
     </ul>
     <div class="front-user-menu">
-        <span>Bonjour, <?= htmlspecialchars($_SESSION['user_prenom'] ?? '') ?></span>
-        <a href="index.php?action=logout" class="btn btn-danger btn-sm">🚪 Déconnexion</a>
+        <span><span data-i18n="nav_hello">Bonjour</span>, <?= htmlspecialchars($_SESSION['user_prenom'] ?? '') ?></span>
+        <a href="index.php?action=logout" class="btn btn-danger btn-sm" data-i18n="nav_logout">🚪 Déconnexion</a>
     </div>
 </nav>
 
@@ -415,3 +416,6 @@ function stopCamera() {
 </script>
 </body>
 </html>
+
+
+

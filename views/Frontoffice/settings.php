@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr" data-theme="light" dir="ltr">
 <head>
     <meta charset="UTF-8">
@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- settings.js chargé EN PREMIER pour éviter le flash de thème -->
     <script src="assets/js/settings.js"></script>
+    <script src="assets/js/chatbot.js" defer></script>
 </head>
 <body>
 <nav class="front-navbar">
@@ -216,3 +217,5 @@ function saveSettings() {
 </script>
 </body>
 </html>
+
+

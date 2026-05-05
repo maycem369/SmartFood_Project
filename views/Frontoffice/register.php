@@ -1,9 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <title>Inscription - SmartFood</title>
     <link rel="stylesheet" href="assets/css/style.css">
+    <script src="assets/js/settings.js"></script>
+    <script src="assets/js/chatbot.js" defer></script>
 </head>
 <body>
 <div class="register-container">
@@ -17,13 +19,15 @@
             <div class="form-group"><label>Nom</label><input type="text" name="nom" id="reg-nom" autocomplete="family-name"></div>
             <div class="form-group"><label>Prénom</label><input type="text" name="prenom" id="reg-prenom" autocomplete="given-name"></div>
         </div>
-        <div class="form-group"><label>Email</label><input type="text" name="email" id="reg-email" autocomplete="email"></div>
-        <div class="form-group"><label>Mot de passe</label><input type="password" name="password" id="reg-password" autocomplete="new-password"></div>
+        <div class="form-group"><label data-i18n="auth_email">Email</label><input type="text" name="email" id="reg-email" autocomplete="email"></div>
+        <div class="form-group"><label data-i18n="auth_pwd">Mot de passe</label><input type="password" name="password" id="reg-password" autocomplete="new-password"></div>
         <div class="form-group"><label>Confirmer</label><input type="password" name="confirm_password" id="reg-confirm" autocomplete="new-password"></div>
-        <button type="submit" class="btn btn-primary">S'inscrire</button>
+        <button type="submit" class="btn btn-primary" data-i18n="auth_register">S'inscrire</button>
     </form>
     <div class="links"><p>Déjà inscrit ? <a href="index.php">Se connecter</a></p></div>
 </div>
 <script src="assets/js/validation.js"></script>
 </body>
 </html>
+
+
