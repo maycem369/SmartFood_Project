@@ -11,6 +11,7 @@ if (!$token) {
     <meta charset="UTF-8">
     <title>Nouveau mot de passe - SmartFood</title>
     <link rel="stylesheet" href="assets/css/style.css">
+    <script src="assets/js/settings.js"></script>
 </head>
 <body>
 <div class="login-container">

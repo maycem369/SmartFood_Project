@@ -87,6 +87,20 @@ class AdminController {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    private function getGoalDistribution(): array {
+        $query = "SELECT objectif, COUNT(*) as nb FROM profil GROUP BY objectif";
+        $stmt = $this->db->query($query);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    private function getRecentActivities(int $limit = 10): array {
+        $query = "SELECT * FROM activity_log ORDER BY created_at DESC LIMIT :limit";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     // =========================================================================
     // USER — DB OPERATIONS
     // =========================================================================
@@ -142,6 +156,8 @@ class AdminController {
         $caloriesParMois      = $this->getCaloriesMoyennesParMois();
         $derniersUtilisateurs = $this->getDerniersUtilisateurs(5);
         $dernieresRecettes    = $this->getDernieresRecettes(5);
+        $goalDistribution     = $this->getGoalDistribution();
+        $recentActivities     = $this->getRecentActivities(8);
         include __DIR__ . '/../views/Backoffice/dashboard_admin.php';
     }
 
@@ -195,6 +211,14 @@ class AdminController {
     public function showAddUser(): void {
         $this->requireAdmin();
         include __DIR__ . '/../views/Backoffice/add_user.php';
+    }
+
+    public function configuration(): void {
+        $this->requireAdmin();
+        $id = (int)$_SESSION['user_id'];
+        $user = $this->fetchUserWithProfil($id);
+        $hasFaceId = !empty($user['face_descriptor']);
+        include __DIR__ . '/../views/Backoffice/configuration.php';
     }
 
     public function deleteUserConfirm(): void {

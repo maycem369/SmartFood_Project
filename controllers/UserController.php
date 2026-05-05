@@ -461,6 +461,46 @@ public function ajaxResetPassword(): void {
         }
     }
 
+    public function ajaxUpdatePassword(): void {
+        header('Content-Type: application/json');
+        if (!isset($_SESSION['user_id'])) {
+            echo json_encode(['success' => false, 'message' => 'Session expirée.']);
+            exit;
+        }
+        $id = $_SESSION['user_id'];
+        $currentUser = $this->fetchUser($id);
+
+        $current = $_POST['current_password'] ?? '';
+        $new     = $_POST['new_password']     ?? '';
+        $confirm = $_POST['confirm_password'] ?? '';
+
+        if (!password_verify($current, $currentUser['motDePasse'])) {
+            echo json_encode(['success' => false, 'message' => 'Mot de passe actuel incorrect.']);
+            exit;
+        }
+        if ($new !== $confirm) {
+            echo json_encode(['success' => false, 'message' => 'Les nouveaux mots de passe ne correspondent pas.']);
+            exit;
+        }
+        if (strlen($new) < 6) {
+            echo json_encode(['success' => false, 'message' => 'Nouveau mot de passe trop court (min 6).']);
+            exit;
+        }
+
+        $newHash = password_hash($new, PASSWORD_DEFAULT);
+        $query   = "UPDATE utilisateur SET motDePasse = :password WHERE idUser = :id";
+        $stmt    = $this->db->prepare($query);
+        $stmt->bindParam(':password', $newHash);
+        $stmt->bindParam(':id',       $id);
+        
+        if ($stmt->execute()) {
+            echo json_encode(['success' => true, 'message' => 'Mot de passe mis à jour avec succès !']);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Erreur technique lors de la mise à jour.']);
+        }
+        exit;
+    }
+
     // =========================================================================
     // BACK OFFICE — ACTIONS
     // =========================================================================

@@ -1,9 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <title>Supprimer utilisateur - SmartFood</title>
     <link rel="stylesheet" href="assets/css/style.css">
+    <script src="assets/js/settings.js"></script>
 </head>
 <body>
 <div class="center-container" style="display:flex; justify-content:center; align-items:center; min-height:100vh;">
