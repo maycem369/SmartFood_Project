@@ -5,30 +5,172 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartFood – Mangez sain, gaspillez moins</title>
     <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Hero section styles */
+        .hero-home {
+            padding: 80px 48px;
+            background: linear-gradient(135deg, var(--front-accent-glow) 0%, var(--front-bg) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+        }
+        .hero-content {
+            flex: 1;
+            max-width: 600px;
+        }
+        .hero-content h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--front-accent) 0%, var(--front-orange) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero-content p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 32px;
+        }
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+        }
+        .hero-image {
+            width: 400px;
+            height: 350px;
+            background: linear-gradient(135deg, var(--front-orange) 0%, var(--front-accent) 100%);
+            border-radius: var(--border-radius-xl);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8rem;
+            box-shadow: var(--shadow-lg);
+        }
+        .home-nav {
+            background: var(--white);
+            padding: 20px 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-xs);
+        }
+        .home-nav .logo {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--front-accent);
+            font-family: 'Poppins', sans-serif;
+        }
+        .home-nav .logo span {
+            color: var(--front-orange);
+        }
+        .home-nav-links {
+            display: flex;
+            gap: 12px;
+        }
+        .home-features {
+            padding: 80px 48px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+        }
+        .feature-card {
+            background: var(--white);
+            border: 1px solid rgba(45, 106, 79, 0.08);
+            border-radius: var(--border-radius-lg);
+            padding: 32px;
+            box-shadow: var(--shadow-sm);
+            text-align: center;
+            transition: var(--t);
+        }
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-md);
+        }
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--front-accent-glow);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 2.5rem;
+            color: var(--front-accent);
+        }
+        .feature-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 12px;
+            color: var(--text-dark);
+        }
+        .feature-card p {
+            color: var(--text-muted);
+        }
+        .modal-divider {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 20px 0;
+        }
+        .modal-divider span {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .modal-divider::before, .modal-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border-color);
+        }
+    </style>
 </head>
 <body>
 
 <!-- Navigation -->
-<nav style="background: white; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center;">
-    <div style="font-size: 1.8rem; font-weight: bold; color: var(--smart-green);">Smart<span style="color: var(--smart-orange);">Food</span></div>
-    <div>
-        <a href="#" id="loginBtn" class="btn-hero" style="padding: 8px 24px;">Connexion</a>
-        <a href="#" id="registerBtn" class="btn-hero" style="padding: 8px 24px;">Inscription</a>
+<nav class="home-nav">
+    <div class="logo">Smart<span>Food</span></div>
+    <div class="home-nav-links">
+        <a href="#" id="loginBtn" class="btn btn-secondary">Connexion</a>
+        <a href="#" id="registerBtn" class="btn btn-orange">Inscription</a>
     </div>
 </nav>
 
-<section class="hero">
-    <h1>Mangez sain, gaspillez moins</h1>
-    <p>SmartFood utilise l’IA pour vous proposer des recettes anti-gaspillage.</p>
-    <a href="#" id="heroRegisterBtn" class="btn-hero">Commencez gratuitement →</a>
+<!-- Hero Section -->
+<section class="hero-home">
+    <div class="hero-content">
+        <h1>Mangez sain,<br>gaspillez moins</h1>
+        <p>SmartFood utilise l’IA pour vous proposer des recettes anti-gaspillage personnalisées, et vous connecter en un clin d'œil avec Face ID.</p>
+        <div class="hero-buttons">
+            <a href="#" id="heroRegisterBtn" class="btn btn-orange">Commencez gratuitement →</a>
+            <a href="#" id="heroLoginBtn" class="btn btn-secondary">Se connecter</a>
+        </div>
+    </div>
+    <div class="hero-image">🍽️</div>
 </section>
 
-<div class="grid-3">
-    <div class="card"><i class="fas fa-utensils fa-2x" style="color:var(--smart-orange);"></i><h3>Recettes personnalisées</h3><p>À partir de vos ingrédients.</p></div>
-    <div class="card"><i class="fas fa-chart-line fa-2x" style="color:var(--smart-orange);"></i><h3>Nutrition intelligente</h3><p>Calories, protéines, glucides.</p></div>
-    <div class="card"><i class="fas fa-leaf fa-2x" style="color:var(--smart-orange);"></i><h3>Anti-gaspillage</h3><p>Réduisez vos déchets.</p></div>
-</div>
+<!-- Features Section -->
+<section class="home-features">
+    <div class="feature-card">
+        <div class="feature-icon">🥗</div>
+        <h3>Recettes personnalisées</h3>
+        <p>À partir de vos ingrédients disponibles pour réduire le gaspillage.</p>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3>Nutrition intelligente</h3>
+        <p>Suivi des calories, protéines, glucides pour atteindre vos objectifs.</p>
+    </div>
+    <div class="feature-card">
+        <div class="feature-icon">🪪</div>
+        <h3>Connexion Face ID</h3>
+        <p>Connectez-vous rapidement et en toute sécurité avec votre visage.</p>
+    </div>
+</section>
 
 <!-- MODALE CONNEXION -->
 <div id="loginModal" class="modal">
@@ -40,7 +182,17 @@
             <div class="form-group"><label>Mot de passe</label><input type="password" name="password" required></div>
             <button type="submit" class="btn btn-primary">Se connecter</button>
         </form>
-        <div class="modal-footer"><a href="#" id="forgotPasswordLink">Mot de passe oublié ?</a><br><a href="#" id="switchToRegister">Pas de compte ? S'inscrire</a></div>
+        
+        <div class="modal-divider"><span>OU</span></div>
+        
+        <a href="index.php?action=login_face" class="btn btn-secondary" style="width: 100%; justify-content: center; margin-bottom: 20px;">
+            🪪 Connexion par visage
+        </a>
+        
+        <div class="modal-footer">
+            <a href="#" id="forgotPasswordLink">Mot de passe oublié ?</a><br>
+            <a href="#" id="switchToRegister">Pas de compte ? S'inscrire</a>
+        </div>
     </div>
 </div>
 
@@ -50,13 +202,25 @@
         <span class="close-modal" data-modal="registerModal">&times;</span>
         <h2>Inscription</h2>
         <form id="registerForm" method="POST" action="index.php?action=register">
-            <div class="two-columns"><div class="form-group"><label>Nom</label><input type="text" name="nom" required></div><div class="form-group"><label>Prénom</label><input type="text" name="prenom" required></div></div>
+            <div class="two-columns">
+                <div class="form-group"><label>Nom</label><input type="text" name="nom" required></div>
+                <div class="form-group"><label>Prénom</label><input type="text" name="prenom" required></div>
+            </div>
             <div class="form-group"><label>Email</label><input type="email" name="email" required></div>
             <div class="form-group"><label>Mot de passe</label><input type="password" name="password" required></div>
             <div class="form-group"><label>Confirmer</label><input type="password" name="confirm_password" required></div>
             <button type="submit" class="btn btn-primary">S'inscrire</button>
         </form>
-        <div class="modal-footer"><a href="#" id="switchToLogin">Déjà inscrit ? Se connecter</a></div>
+        
+        <div class="modal-divider"><span>PLUS TARD</span></div>
+        
+        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 16px; text-align: center;">
+            Après l'inscription, vous pourrez enregistrer votre Face ID depuis votre profil !
+        </p>
+        
+        <div class="modal-footer">
+            <a href="#" id="switchToLogin">Déjà inscrit ? Se connecter</a>
+        </div>
     </div>
 </div>
 
@@ -70,7 +234,9 @@
             <div class="form-group"><label>Email</label><input type="email" name="email" id="forgotEmail" required></div>
             <button type="submit" class="btn btn-primary">Envoyer le lien</button>
         </form>
-        <div class="modal-footer"><a href="#" id="backToLoginFromForgot">Retour à la connexion</a></div>
+        <div class="modal-footer">
+            <a href="#" id="backToLoginFromForgot">Retour à la connexion</a>
+        </div>
     </div>
 </div>
 
@@ -86,7 +252,9 @@
             <div class="form-group"><label>Confirmer</label><input type="password" name="confirm_password" id="resetConfirm" required></div>
             <button type="submit" class="btn btn-primary">Changer le mot de passe</button>
         </form>
-        <div class="modal-footer"><a href="#" id="backToLoginFromReset">Retour à la connexion</a></div>
+        <div class="modal-footer">
+            <a href="#" id="backToLoginFromReset">Retour à la connexion</a>
+        </div>
     </div>
 </div>
 
@@ -99,6 +267,7 @@
     const loginBtn = document.getElementById('loginBtn');
     const registerBtn = document.getElementById('registerBtn');
     const heroRegisterBtn = document.getElementById('heroRegisterBtn');
+    const heroLoginBtn = document.getElementById('heroLoginBtn');
     const switchToRegister = document.getElementById('switchToRegister');
     const switchToLogin = document.getElementById('switchToLogin');
     const forgotPasswordLink = document.getElementById('forgotPasswordLink');
@@ -109,6 +278,7 @@
     const closeModal = (modal) => modal.style.display = 'none';
 
     loginBtn.onclick = (e) => { e.preventDefault(); openModal(loginModal); };
+    heroLoginBtn.onclick = (e) => { e.preventDefault(); openModal(loginModal); };
     registerBtn.onclick = (e) => { e.preventDefault(); openModal(registerModal); };
     heroRegisterBtn?.addEventListener('click', (e) => { e.preventDefault(); openModal(registerModal); });
     switchToRegister.onclick = (e) => { e.preventDefault(); closeModal(loginModal); openModal(registerModal); };

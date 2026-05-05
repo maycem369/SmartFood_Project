@@ -19,11 +19,12 @@
         <div class="message success"><?= $_SESSION['info']; unset($_SESSION['info']); ?></div>
     <?php endif; ?>
     <form method="POST" action="index.php?action=login" novalidate>
-        <div class="form-group"><label>Email</label><input type="email" name="email" required></div>
-        <div class="form-group"><label>Mot de passe</label><input type="password" name="password" required></div>
+        <div class="form-group"><label>Email</label><input type="text" name="email" id="login-email" autocomplete="email"></div>
+        <div class="form-group"><label>Mot de passe</label><input type="password" name="password" id="login-pwd" autocomplete="current-password"></div>
         <button type="submit" class="btn btn-primary">Se connecter</button>
     </form>
     <div class="links">
+        <p><a href="index.php?action=login_face">🔐 Connexion par visage</a></p>
         <p><a href="index.php?action=forgot_password">Mot de passe oublié ?</a></p>
         <p>Pas de compte ? <a href="index.php?action=register">S'inscrire</a></p>
     </div>

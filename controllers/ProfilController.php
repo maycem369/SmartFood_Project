@@ -2,10 +2,12 @@
 require_once __DIR__ . '/../config/Database.php';
 require_once __DIR__ . '/../models/Profil.php';
 require_once __DIR__ . '/../models/User.php';
+require_once __DIR__ . '/../models/FaceId.php';
 
 class ProfilController {
     private $profil;
     private $user;
+    private $faceId;
     private $db;
 
     public function __construct() {
@@ -13,6 +15,7 @@ class ProfilController {
         $this->db     = $database->getConnection();
         $this->profil = new Profil($this->db);
         $this->user   = new User($this->db);
+        $this->faceId = new FaceId($this->db);
     }
 
     // ── Guard ─────────────────────────────────────────────────────────────────
@@ -85,6 +88,13 @@ class ProfilController {
             $imc      = $this->calculIMC($profilData['poids'], $profilData['taille']);
             $imcLabel = $this->getImcLabel($imc);
         }
+        
+        $query = "SELECT id FROM " . $this->faceId->getTable() . " WHERE id_user = :id_user";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':id_user', $_SESSION['user_id'], PDO::PARAM_INT);
+        $stmt->execute();
+        $hasFaceId = $stmt->rowCount() > 0;
+        
         include __DIR__ . '/../views/Frontoffice/profil.php';
     }
 

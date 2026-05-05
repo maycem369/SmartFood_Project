@@ -6,17 +6,22 @@
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-<div class="sidebar">
-    <div class="logo"><h1>Smart<span>Food</span></h1></div>
-    <ul class="nav-menu">
+<nav class="front-navbar">
+    <div class="logo">Smart<span>Food</span></div>
+    <ul class="front-nav-links">
         <li><a href="index.php?action=dashboard_user" class="active">🏠 Tableau de bord</a></li>
         <li><a href="index.php?action=profil">👤 Mon Profil</a></li>
-        <li><a href="index.php?action=edit_profile">✏️ Modifier Profil</a></li>
-        <li><a href="index.php?action=change_password">🔑 Changer mot de passe</a></li>
-        <li><a href="index.php?action=logout">🚪 Déconnexion</a></li>
+        <li><a href="#">📋 Recettes</a></li>
+        <li><a href="#">🥗 Nutrition</a></li>
+        <li><a href="index.php?action=profil">⚙️ Paramètres</a></li>
     </ul>
-</div>
-<div class="main-content">
+    <div class="front-user-menu">
+        <span>Bonjour, <?= htmlspecialchars($_SESSION['user_prenom'] ?? '') ?></span>
+        <a href="index.php?action=logout" class="btn btn-danger btn-sm">🚪 Déconnexion</a>
+    </div>
+</nav>
+
+<div class="front-main-content">
     <div class="header">
         <h1>Tableau de bord</h1>
         <div class="user-avatar">

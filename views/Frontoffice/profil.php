@@ -6,18 +6,23 @@
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-<div class="sidebar">
-    <div class="logo"><h1>Smart<span>Food</span></h1></div>
-    <ul class="nav-menu">
+<nav class="front-navbar">
+    <div class="logo">Smart<span>Food</span></div>
+    <ul class="front-nav-links">
         <li><a href="index.php?action=dashboard_user">🏠 Tableau de bord</a></li>
         <li><a href="index.php?action=profil" class="active">👤 Mon Profil</a></li>
-        <li><a href="index.php?action=edit_profile">✏️ Modifier Profil</a></li>
-        <li><a href="index.php?action=change_password">🔑 Changer mot de passe</a></li>
-        <li><a href="index.php?action=logout">🚪 Déconnexion</a></li>
+        <li><a href="#">📋 Recettes</a></li>
+        <li><a href="#">🥗 Nutrition</a></li>
+        <li><a href="index.php?action=edit_profile">⚙️ Paramètres</a></li>
     </ul>
-</div>
-<div class="main-content">
-    <h1 style="color:var(--green); margin-bottom:25px;">Mon Profil</h1>
+    <div class="front-user-menu">
+        <span>Bonjour, <?= htmlspecialchars($_SESSION['user_prenom'] ?? '') ?></span>
+        <a href="index.php?action=logout" class="btn btn-danger btn-sm">🚪 Déconnexion</a>
+    </div>
+</nav>
+
+<div class="front-main-content">
+    <h1 style="color:var(--front-accent); margin-bottom:25px;">Mon Profil</h1>
     <div class="card">
         <div class="profile-header">
             <img src="assets/uploads/<?= htmlspecialchars($profilData['photo'] ?? 'default-avatar.png') ?>"
@@ -76,6 +81,18 @@
             </div>
         </div>
 
+        <div style="margin-top:40px;">
+            <h3>🔐 Face ID</h3>
+            <div style="padding: 20px; border-radius: 12px; <?= $hasFaceId ? 'background: rgba(76, 175, 80, 0.1); border: 1px solid rgba(76, 175, 80, 0.3);' : 'background: rgba(255, 152, 0, 0.1); border: 1px solid rgba(255, 152, 0, 0.3);' ?>">
+                <p style="margin: 0 0 12px 0;">
+                    <?= $hasFaceId ? '✅ Face ID activé - Vous pouvez vous connecter avec votre visage !' : '⚠️ Aucun Face ID enregistré' ?>
+                </p>
+                <a href="index.php?action=face_register" class="btn btn-orange">
+                    <?= $hasFaceId ? '🪪 Gérer Face ID' : '📷 Enregistrer mon visage' ?>
+                </a>
+            </div>
+        </div>
+        
         <div style="margin-top:40px;">
             <a href="index.php?action=edit_profile" class="btn btn-orange">✏️ Modifier mes informations</a>
         </div>

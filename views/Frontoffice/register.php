@@ -14,12 +14,12 @@
     <?php endif; ?>
     <form method="POST" action="index.php?action=register" novalidate>
         <div class="two-columns">
-            <div class="form-group"><label>Nom</label><input type="text" name="nom" required></div>
-            <div class="form-group"><label>Prénom</label><input type="text" name="prenom" required></div>
+            <div class="form-group"><label>Nom</label><input type="text" name="nom" id="reg-nom" autocomplete="family-name"></div>
+            <div class="form-group"><label>Prénom</label><input type="text" name="prenom" id="reg-prenom" autocomplete="given-name"></div>
         </div>
-        <div class="form-group"><label>Email</label><input type="email" name="email" required></div>
-        <div class="form-group"><label>Mot de passe</label><input type="password" name="password" required></div>
-        <div class="form-group"><label>Confirmer</label><input type="password" name="confirm_password" required></div>
+        <div class="form-group"><label>Email</label><input type="text" name="email" id="reg-email" autocomplete="email"></div>
+        <div class="form-group"><label>Mot de passe</label><input type="password" name="password" id="reg-password" autocomplete="new-password"></div>
+        <div class="form-group"><label>Confirmer</label><input type="password" name="confirm_password" id="reg-confirm" autocomplete="new-password"></div>
         <button type="submit" class="btn btn-primary">S'inscrire</button>
     </form>
     <div class="links"><p>Déjà inscrit ? <a href="index.php">Se connecter</a></p></div>

@@ -1,10 +1,3 @@
-<?php
-$token = $_GET['token'] ?? '';
-if (!$token) {
-    header("Location: index.php");
-    exit();
-}
-?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -19,8 +12,8 @@ if (!$token) {
         <div class="message error"><?= $_SESSION['error']; unset($_SESSION['error']); ?></div>
     <?php endif; ?>
     <form method="POST" action="index.php?action=reset_password&token=<?= urlencode($token) ?>" novalidate>
-        <div class="form-group"><label>Nouveau mot de passe</label><input type="password" name="password" required></div>
-        <div class="form-group"><label>Confirmer</label><input type="password" name="confirm_password" required></div>
+        <div class="form-group"><label>Nouveau mot de passe</label><input type="password" name="password" id="reset-pwd" autocomplete="new-password"></div>
+        <div class="form-group"><label>Confirmer</label><input type="password" name="confirm_password" id="reset-confirm" autocomplete="new-password"></div>
         <button type="submit" class="btn btn-primary">Changer</button>
     </form>
 </div>

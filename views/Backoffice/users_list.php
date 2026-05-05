@@ -7,21 +7,32 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-<nav class="top-navbar">
-    <div class="logo-area"><h1>Smart<span>Food</span></h1></div>
-    <div class="nav-links">
-        <a href="index.php?action=admin_dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-        <a href="index.php?action=users_list" class="active"><i class="fas fa-users"></i> Utilisateurs</a>
-        <a href="#"><i class="fas fa-utensils"></i> Recettes</a>
-        <a href="#"><i class="fas fa-carrot"></i> Ingrédients</a>
+<div class="sidebar">
+    <div class="logo">
+        <h1>Smart<span>Food</span></h1>
     </div>
-    <div class="user-menu">
-        <span><?= htmlspecialchars($_SESSION['user_prenom']) ?></span>
-        <a href="index.php?action=logout"><i class="fas fa-sign-out-alt"></i> Déconnexion</a>
+    <ul class="nav-menu">
+        <li><a href="index.php?action=admin_dashboard">
+            <i class="fas fa-tachometer-alt"></i> Dashboard
+        </a></li>
+        <li><a href="index.php?action=users_list" class="active">
+            <i class="fas fa-users"></i> Utilisateurs
+        </a></li>
+        <li><a href="#">
+            <i class="fas fa-utensils"></i> Recettes
+        </a></li>
+        <li><a href="#">
+            <i class="fas fa-carrot"></i> Ingrédients
+        </a></li>
+    </ul>
+    <div class="switch-mode">
+        <a href="index.php?action=home" class="admin-link">
+            ← Retour à l'accueil
+        </a>
     </div>
-</nav>
+</div>
 
-<div class="backoffice-container">
+<div class="main-content">
     <h1 class="page-title">👥 Gestion des utilisateurs</h1>
 
     <?php if(isset($_SESSION['success'])): ?>
