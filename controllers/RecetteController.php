@@ -1,159 +1,232 @@
 <?php
-
 require_once __DIR__."/../config/Database.php";
 
-class RecetteController{
+class RecetteController {
 
-/* ================= HANDLE REQUEST ================= */
+    /* ===== CATEGORIES ===== */
+    const CATEGORIES = [
+        'Italien',
+        'Healthy',
+        'Fast Food',
+        'Dessert',
+        'Tunisien',
+        'Autre'
+    ];
 
-function handleRequest(){
+    /* ===== AUTO MIGRATE DB ===== */
+    public static function migrate() {
+        $db = Database::connect();
 
-if(isset($_POST['add'])){
-$this->addRecette($_POST);
-}
+        // Add categorie column if not exists
+        $cols = $db->query("SHOW COLUMNS FROM recettes")->fetchAll(PDO::FETCH_COLUMN);
+        if (!in_array('categorie', $cols)) {
+            $db->exec("ALTER TABLE recettes ADD COLUMN categorie VARCHAR(50) DEFAULT 'Autre'");
+        }
+        if (!in_array('photo', $cols)) {
+            $db->exec("ALTER TABLE recettes ADD COLUMN photo VARCHAR(255) DEFAULT NULL");
+        }
+    }
 
-if(isset($_POST['delete'])){
-$this->delete($_POST['id']);
-}
+    /* ===== HANDLE REQUEST ===== */
+    public function handleRequest() {
+        if (isset($_POST['add']))      { $this->addRecette($_POST, $_FILES); }
+        if (isset($_POST['delete']))   { $this->delete($_POST['id']); }
+        if (isset($_POST['update']))   { $this->updateFull($_POST, $_FILES); }
+        if (isset($_POST['validate'])) { $this->validate($_POST['id']); }
+    }
 
-if(isset($_POST['update'])){
-$this->update($_POST['id'],$_POST['nom']);
-}
+    /* ===== UPLOAD PHOTO ===== */
+    private function uploadPhoto($file) {
+        if (!$file || $file['error'] !== UPLOAD_ERR_OK) return null;
 
-if(isset($_POST['validate'])){
-$this->validate($_POST['id']);
-}
+        $uploadDir = __DIR__ . '/../uploads/recettes/';
+        if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
 
-}
+        $ext      = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        $allowed  = ['jpg', 'jpeg', 'png', 'webp'];
+        if (!in_array($ext, $allowed)) return null;
 
-/* ================= ADD RECETTE ================= */
+        $filename = uniqid('recette_') . '.' . $ext;
+        move_uploaded_file($file['tmp_name'], $uploadDir . $filename);
+        return $filename;
+    }
 
-function addRecette($data){
+    /* ===== ADD ===== */
+    public function addRecette($data, $files = []) {
+        $db = Database::connect();
 
-$db=Database::connect();
+        if (strlen($data['nom']) < 3 || strlen($data['description']) < 3) return;
 
-$sql="INSERT INTO recettes(nom,description,status)
-VALUES(?,?, 'Non validée')";
+        $photo    = isset($files['photo']) ? $this->uploadPhoto($files['photo']) : null;
+        $categorie = $data['categorie'] ?? 'Autre';
 
-$stmt=$db->prepare($sql);
-$stmt->execute([
-$data['nom'],
-$data['description']
-]);
+        $db->prepare("INSERT INTO recettes(nom, description, status, categorie, photo)
+                      VALUES(?, ?, 'Non validée', ?, ?)")
+           ->execute([$data['nom'], $data['description'], $categorie, $photo]);
 
-$idrecette = $db->lastInsertId();
+        $id = $db->lastInsertId();
 
-if(isset($data['ingredients'])){
-foreach($data['ingredients'] as $iding){
-$this->addIngredientToRecette($idrecette,$iding);
-}
-}
+        if (!empty($data['ingredients'])) {
+            foreach ($data['ingredients'] as $i) {
+                $this->addIngredientToRecette($id, $i);
+            }
+        }
+    }
 
-}
+    /* ===== RELATION ===== */
+    public function addIngredientToRecette($id, $ing) {
+        $db = Database::connect();
+        $db->prepare("INSERT INTO recette_ingredient VALUES(?,?)")->execute([$id, $ing]);
+    }
 
-/* ================= ADD RELATION ================= */
+    /* ===== GET ALL ===== */
+    public function getAll() {
+        $db = Database::connect();
+        $sql = "
+            SELECT r.idrecette, r.nom, r.description, r.status, r.categorie, r.photo,
+                   GROUP_CONCAT(i.nom SEPARATOR ', ') as ingredients
+            FROM recettes r
+            LEFT JOIN recette_ingredient ri ON r.idrecette = ri.idrecette
+            LEFT JOIN ingredient i ON ri.idingredient = i.idingredient
+            GROUP BY r.idrecette
+            ORDER BY r.idrecette DESC
+        ";
+        return $db->query($sql)->fetchAll();
+    }
 
-function addIngredientToRecette($idrecette,$idingredient){
+    /* ===== GET BY CATEGORY ===== */
+    public function getByCategory($categorie) {
+        $db = Database::connect();
+        $sql = "
+            SELECT r.idrecette, r.nom, r.description, r.status, r.categorie, r.photo,
+                   GROUP_CONCAT(i.nom SEPARATOR ', ') as ingredients
+            FROM recettes r
+            LEFT JOIN recette_ingredient ri ON r.idrecette = ri.idrecette
+            LEFT JOIN ingredient i ON ri.idingredient = i.idingredient
+            WHERE r.categorie = ?
+            GROUP BY r.idrecette
+            ORDER BY r.idrecette DESC
+        ";
+        $stmt = $db->prepare($sql);
+        $stmt->execute([$categorie]);
+        return $stmt->fetchAll();
+    }
 
-$db=Database::connect();
+    /* ===== SEARCH MULTIPLE ===== */
+    public function searchMultiple($ingredients) {
+        $db = Database::connect();
+        $placeholders = implode(',', array_fill(0, count($ingredients), '?'));
+        $sql = "
+            SELECT r.idrecette, r.nom, r.description, r.status, r.categorie, r.photo,
+                   GROUP_CONCAT(i.nom SEPARATOR ', ') as ingredients
+            FROM recettes r
+            JOIN recette_ingredient ri ON r.idrecette = ri.idrecette
+            JOIN ingredient i ON ri.idingredient = i.idingredient
+            GROUP BY r.idrecette
+            HAVING SUM(i.nom IN ($placeholders)) = ?
+        ";
+        $params   = $ingredients;
+        $params[] = count($ingredients);
+        $stmt     = $db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll();
+    }
 
-$sql="INSERT INTO recette_ingredient
-VALUES(?,?)";
+    /* ===== RECOMMEND ===== */
+    public function recommend($userIngredients) {
+        $db      = Database::connect();
+        $sql     = "
+            SELECT r.idrecette, r.nom, r.description, r.status, r.categorie, r.photo,
+                   GROUP_CONCAT(i.nom SEPARATOR ', ') as ingredients
+            FROM recettes r
+            LEFT JOIN recette_ingredient ri ON r.idrecette = ri.idrecette
+            LEFT JOIN ingredient i ON ri.idingredient = i.idingredient
+            GROUP BY r.idrecette
+        ";
+        $recettes = $db->query($sql)->fetchAll();
+        $result   = [];
 
-$stmt=$db->prepare($sql);
-$stmt->execute([$idrecette,$idingredient]);
+        foreach ($recettes as $r) {
+            $list    = $r['ingredients'] ? explode(',', $r['ingredients']) : [];
+            $list    = array_map('trim', $list);
+            $total   = count($list);
+            $match   = 0;
+            $missing = [];
 
-}
+            foreach ($list as $ing) {
+                if (in_array($ing, $userIngredients)) $match++;
+                else $missing[] = $ing;
+            }
 
-/* ================= GET ALL ================= */
+            $percent = $total > 0 ? round(($match / $total) * 100) : 0;
+            if ($percent == 0) continue;
 
-function getAll(){
+            $r['match']   = $percent;
+            $r['missing'] = implode(', ', $missing);
+            $result[]     = $r;
+        }
 
-$db=Database::connect();
+        usort($result, fn($a, $b) => $b['match'] - $a['match']);
+        return $result;
+    }
 
-$sql="
-SELECT r.idrecette,r.nom,r.description,r.status,
-GROUP_CONCAT(i.nom SEPARATOR ', ') as ingredients
-FROM recettes r
-LEFT JOIN recette_ingredient ri ON r.idrecette=ri.idrecette
-LEFT JOIN ingredient i ON ri.idingredient=i.idingredient
-GROUP BY r.idrecette
-";
+    /* ===== DELETE ===== */
+    public function delete($id) {
+        $db = Database::connect();
 
-return $db->query($sql)->fetchAll();
-}
+        // Delete photo file if exists
+        $r = $db->prepare("SELECT photo FROM recettes WHERE idrecette=?");
+        $r->execute([$id]);
+        $row = $r->fetch();
+        if ($row && $row['photo']) {
+            $path = __DIR__ . '/../uploads/recettes/' . $row['photo'];
+            if (file_exists($path)) unlink($path);
+        }
 
-/* ================= SEARCH ================= */
+        $db->prepare("DELETE FROM recette_ingredient WHERE idrecette=?")->execute([$id]);
+        $db->prepare("DELETE FROM recettes WHERE idrecette=?")->execute([$id]);
+    }
 
-function search($ingredient){
+    /* ===== UPDATE ===== */
+    public function updateFull($data, $files = []) {
+        $db = Database::connect();
 
-$db=Database::connect();
+        // Handle new photo upload
+        $photo = null;
+        if (isset($files['photo']) && $files['photo']['error'] === UPLOAD_ERR_OK) {
+            // Delete old photo
+            $r = $db->prepare("SELECT photo FROM recettes WHERE idrecette=?");
+            $r->execute([$data['id']]);
+            $old = $r->fetch();
+            if ($old && $old['photo']) {
+                $path = __DIR__ . '/../uploads/recettes/' . $old['photo'];
+                if (file_exists($path)) unlink($path);
+            }
+            $photo = $this->uploadPhoto($files['photo']);
+        }
 
-$sql="
-SELECT r.idrecette,r.nom,r.description,r.status,
-GROUP_CONCAT(i.nom SEPARATOR ', ') as ingredients
-FROM recettes r
-JOIN recette_ingredient ri ON r.idrecette=ri.idrecette
-JOIN ingredient i ON ri.idingredient=i.idingredient
-WHERE r.idrecette IN (
+        $categorie = $data['categorie'] ?? 'Autre';
 
-SELECT r2.idrecette
-FROM recettes r2
-JOIN recette_ingredient ri2 ON r2.idrecette=ri2.idrecette
-JOIN ingredient i2 ON ri2.idingredient=i2.idingredient
-WHERE i2.nom=?
+        if ($photo) {
+            $db->prepare("UPDATE recettes SET nom=?, description=?, categorie=?, photo=? WHERE idrecette=?")
+               ->execute([$data['nom'], $data['description'], $categorie, $photo, $data['id']]);
+        } else {
+            $db->prepare("UPDATE recettes SET nom=?, description=?, categorie=? WHERE idrecette=?")
+               ->execute([$data['nom'], $data['description'], $categorie, $data['id']]);
+        }
 
-)
+        $db->prepare("DELETE FROM recette_ingredient WHERE idrecette=?")->execute([$data['id']]);
 
-GROUP BY r.idrecette
-";
+        if (!empty($data['ingredients'])) {
+            foreach ($data['ingredients'] as $i) {
+                $this->addIngredientToRecette($data['id'], $i);
+            }
+        }
+    }
 
-$stmt=$db->prepare($sql);
-$stmt->execute([$ingredient]);
-
-return $stmt->fetchAll();
-}
-
-/* ================= DELETE ================= */
-
-function delete($id){
-
-$db=Database::connect();
-
-$db->prepare("DELETE FROM recette_ingredient WHERE idrecette=?")
-->execute([$id]);
-
-$db->prepare("DELETE FROM recettes WHERE idrecette=?")
-->execute([$id]);
-
-}
-
-/* ================= UPDATE ================= */
-
-function update($id,$nom){
-
-$db=Database::connect();
-
-$sql="UPDATE recettes SET nom=? WHERE idrecette=?";
-
-$stmt=$db->prepare($sql);
-$stmt->execute([$nom,$id]);
-
-}
-
-/* ================= VALIDATE ================= */
-
-function validate($id){
-
-$db=Database::connect();
-
-$sql="UPDATE recettes 
-SET status='Validée'
-WHERE idrecette=?";
-
-$stmt=$db->prepare($sql);
-$stmt->execute([$id]);
-
-}
-
+    /* ===== VALIDATE ===== */
+    public function validate($id) {
+        $db = Database::connect();
+        $db->prepare("UPDATE recettes SET status='Validée' WHERE idrecette=?")->execute([$id]);
+    }
 }

@@ -1,41 +1,30 @@
 <?php
+require_once __DIR__."/../config/Database.php";
 
-require_once __DIR__ . "/../config/Database.php";
-
-class IngredientController {
-
-/* ================= HANDLE REQUEST ================= */
+class IngredientController{
 
 function handleRequest(){
 
-if(isset($_POST['addIngredient'])){
+if(isset($_POST['addIngredient']) && !empty($_POST['nomIngredient'])){
 $this->add($_POST['nomIngredient']);
 }
 
 }
 
-/* ================= ADD INGREDIENT ================= */
-
 function add($nom){
 
-$db = Database::connect();
+$db=Database::connect();
 
-$sql = "INSERT INTO ingredient(nom) VALUES (?)";
-
-$stmt = $db->prepare($sql);
-$stmt->execute([$nom]);
+$db->prepare("INSERT INTO ingredient(nom) VALUES(?)")
+->execute([$nom]);
 
 }
 
-/* ================= GET ALL ================= */
-
 function getAll(){
 
-$db = Database::connect();
+$db=Database::connect();
 
-$sql = "SELECT * FROM ingredient";
-
-return $db->query($sql)->fetchAll();
+return $db->query("SELECT * FROM ingredient")->fetchAll();
 
 }
 

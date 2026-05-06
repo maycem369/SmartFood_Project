@@ -1,13 +1,15 @@
 <?php
-class Database {
-    public static function connect() {
-        try {
-            $pdo = new PDO("mysql:host=localhost;dbname=smartfood", "root", "");
-            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            return $pdo;
-        } catch(PDOException $e) {
-            die("Connection failed: " . $e->getMessage());
-        }
-    }
+
+class Database{
+
+public static function connect(){
+
+try{
+return new PDO("mysql:host=localhost;dbname=smartfood","root","");
+}catch(PDOException $e){
+die("DB ERROR: ".$e->getMessage());
 }
-?>
+
+}
+
+}
