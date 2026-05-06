@@ -34,7 +34,8 @@ if (isset($_SESSION['nutrition_errors'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartFood - Modifier Ingrédient</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/style.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="../css/theme.css?v=<?php echo time(); ?>">
 </head>
 <body class="admin-body">
 
@@ -48,6 +49,15 @@ if (isset($_SESSION['nutrition_errors'])) {
                 <li><a href="nutrition_dashboard.php">📊 Rapport Nutritionnel</a></li>
                 <li><a href="#">⚙️ Validation Recettes</a></li>
             </ul>
+            <div class="sidebar-footer" style="margin-top:auto;padding:16px 12px 24px;border-top:1px solid rgba(255,255,255,0.05);">
+                <div style="display:flex;align-items:center;gap:10px;">
+                    <button class="theme-toggle" aria-label="Changer le thème">
+                        <span class="toggle-icon icon-moon">&#127769;</span>
+                        <span class="toggle-icon icon-sun">&#9728;&#65039;</span>
+                    </button>
+                    <span style="font-size:0.78rem;color:rgba(255,255,255,0.35);font-weight:500;">Thème</span>
+                </div>
+            </div>
         </nav>
 
         <main class="main-content">
@@ -109,6 +119,7 @@ if (isset($_SESSION['nutrition_errors'])) {
         </main>
     </div>
 
+    <script src="../js/theme-toggle.js"></script>
     <script src="../js/validation.js"></script>
     <script>
         // Attacher la validation au formulaire de modification

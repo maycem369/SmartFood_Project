@@ -2,20 +2,20 @@
 /* view/css/front-style.css — Advanced Modern Dashboard Overrides */
 
 :root {
-    --front-bg: #f8faf9;
-    --front-accent: #2D6A4F;
-    --front-accent-glow: rgba(45, 106, 79, 0.15);
-    --front-orange: #FF8C00;
-    --front-orange-glow: rgba(255, 140, 0, 0.25);
+    --front-bg: var(--theme-bg, #f8faf9);
+    --front-accent: var(--theme-green, #2D6A4F);
+    --front-accent-glow: var(--theme-green-glow, rgba(45, 106, 79, 0.15));
+    --front-orange: var(--theme-orange, #FF8C00);
+    --front-orange-glow: var(--theme-orange-glow, rgba(255, 140, 0, 0.25));
     --midnight-emerald: #081c15;
     --midnight-light: #1b4332;
     --border-radius-xl: 32px;
     --border-radius-lg: 24px;
-    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-bg: var(--theme-glass-bg, rgba(255, 255, 255, 0.7));
 }
 
 body.front-page {
-    background-color: var(--front-bg);
+    background-color: var(--theme-bg, var(--front-bg));
     overflow-x: hidden;
     font-family: 'Outfit', sans-serif;
 }
@@ -267,7 +267,7 @@ body.front-page {
 .front-page h1 {
     font-size: 2.5rem;
     letter-spacing: -1px;
-    color: var(--text-dark);
+    color: var(--theme-text, var(--text-dark));
     font-weight: 700;
 }
 
@@ -299,19 +299,19 @@ body.front-page {
 
 /* Card Refinement */
 .front-page .card {
-    background: var(--glass-bg);
+    background: var(--theme-glass-bg, var(--glass-bg));
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255,255,255,0.4);
+    border: 1px solid var(--theme-glass-border, rgba(255,255,255,0.4));
     border-radius: var(--border-radius-lg);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.03);
+    box-shadow: var(--theme-card-shadow, 0 8px 32px rgba(0,0,0,0.03));
     padding: 30px;
     transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .front-page .card:hover {
     transform: translateY(-8px);
-    box-shadow: 0 20px 40px rgba(45, 106, 79, 0.08);
+    box-shadow: var(--theme-card-shadow-hover, 0 20px 40px rgba(45, 106, 79, 0.08));
     border-color: var(--front-accent-glow);
 }
 
@@ -323,7 +323,7 @@ body.front-page {
 }
 
 .front-page .macro-box {
-    background: var(--white);
+    background: var(--theme-surface, var(--white));
     border-radius: 20px;
     padding: 15px;
     flex-direction: column;
@@ -407,7 +407,7 @@ body.front-page {
     align-items: center;
     padding: 20px 10px;
     border-radius: 20px;
-    background: var(--white);
+    background: var(--theme-surface, var(--white));
     border: 2px solid transparent;
     transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     position: relative;
@@ -438,13 +438,13 @@ body.front-page {
     font-size: 0.75rem;
     text-transform: uppercase;
     font-weight: 600;
-    color: #888;
+    color: var(--theme-text-muted, #888);
     letter-spacing: 0.5px;
 }
 
 .chart-detail {
     font-size: 0.72rem;
-    color: #aaa;
+    color: var(--theme-text-faint, #aaa);
     margin-top: 2px;
     transition: color 0.4s;
 }
@@ -452,17 +452,17 @@ body.front-page {
 /* === Zone States === */
 .progress-chart-card.safe-zone {
     border-color: rgba(45, 106, 79, 0.15);
-    background: linear-gradient(180deg, rgba(45, 106, 79, 0.03) 0%, white 100%);
+    background: linear-gradient(180deg, rgba(45, 106, 79, 0.03) 0%, var(--theme-surface, white) 100%);
 }
 
 .progress-chart-card.warning-zone {
     border-color: rgba(255, 140, 0, 0.3);
-    background: linear-gradient(180deg, rgba(255, 140, 0, 0.05) 0%, white 100%);
+    background: linear-gradient(180deg, rgba(255, 140, 0, 0.05) 0%, var(--theme-surface, white) 100%);
 }
 
 .progress-chart-card.danger-zone {
     border-color: rgba(139, 0, 0, 0.35);
-    background: linear-gradient(180deg, rgba(139, 0, 0, 0.06) 0%, rgba(255, 240, 240, 0.8) 100%);
+    background: linear-gradient(180deg, rgba(139, 0, 0, 0.06) 0%, var(--theme-surface, rgba(255, 240, 240, 0.8)) 100%);
     animation: dangerPulse 1.5s ease-in-out infinite;
 }
 
@@ -507,14 +507,14 @@ body.front-page {
 .suggestion-text strong {
     display: block;
     font-size: 1rem;
-    color: var(--text-dark);
+    color: var(--theme-text, var(--text-dark));
     margin-bottom: 6px;
     font-family: 'Poppins', sans-serif;
 }
 
 .suggestion-text p {
     font-size: 0.85rem;
-    color: #666;
+    color: var(--theme-text-secondary, #666);
     line-height: 1.5;
     margin: 0;
 }
@@ -593,14 +593,14 @@ body.front-page {
 .water-text {
     font-size: 1.5rem;
     font-weight: 700;
-    color: var(--text-dark);
+    color: var(--theme-text, var(--text-dark));
     margin-bottom: 5px;
     font-family: 'Outfit', sans-serif;
 }
 
 .water-goal {
     font-size: 0.85rem;
-    color: #666;
+    color: var(--theme-text-secondary, #666);
     margin-bottom: 15px;
 }
 
@@ -669,7 +669,7 @@ body.front-page {
 .streak-day-name {
     font-size: 0.75rem;
     font-weight: 600;
-    color: #999;
+    color: var(--theme-text-muted, #999);
     text-transform: uppercase;
 }
 
@@ -729,7 +729,7 @@ body.front-page {
 
 .streak-message {
     font-size: 0.85rem;
-    color: #666;
+    color: var(--theme-text-secondary, #666);
     text-align: center;
     font-style: italic;
     background: rgba(255, 140, 0, 0.05);

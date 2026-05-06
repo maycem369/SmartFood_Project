@@ -15,6 +15,7 @@ $ingredients = $ctrl->listIngredients();
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/style.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="../css/front-style.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="../css/theme.css?v=<?php echo time(); ?>">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 </head>
 <body class="front-page">
@@ -59,6 +60,10 @@ $ingredients = $ctrl->listIngredients();
         </ul>
 
         <div class="navbar-actions">
+            <button class="theme-toggle" aria-label="Changer le thème">
+                <span class="toggle-icon icon-moon">&#127769;</span>
+                <span class="toggle-icon icon-sun">&#9728;&#65039;</span>
+            </button>
             <a href="../backoffice/index.php" class="btn-admin-link">
                 <span>&#9881;</span> Back Office
             </a>
@@ -325,6 +330,7 @@ $ingredients = $ctrl->listIngredients();
         </main>
     </div>
 
+    <script src="../js/theme-toggle.js"></script>
     <script src="../js/validation.js"></script>
     <script src="../js/metier.js"></script>
     <script>

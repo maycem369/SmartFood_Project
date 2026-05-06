@@ -28,8 +28,9 @@ if (isset($_GET['error'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartFood - Back Office Nutrition</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/modal.css">
+    <link rel="stylesheet" href="../css/style.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="../css/theme.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="../css/modal.css?v=<?php echo time(); ?>">
 </head>
 <body class="admin-body">
 
@@ -73,6 +74,13 @@ if (isset($_GET['error'])) {
             </ul>
 
             <div class="sidebar-footer">
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+                    <button class="theme-toggle" aria-label="Changer le thème">
+                        <span class="toggle-icon icon-moon">&#127769;</span>
+                        <span class="toggle-icon icon-sun">&#9728;&#65039;</span>
+                    </button>
+                    <span style="font-size:0.78rem;color:rgba(255,255,255,0.35);font-weight:500;">Thème</span>
+                </div>
                 <a href="../frontoffice/index.php" class="sidebar-back-btn">
                     <span>&#8592;</span> Front Office
                 </a>
@@ -286,6 +294,7 @@ if (isset($_GET['error'])) {
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <script src="../js/theme-toggle.js"></script>
     <script src="../js/validation.js"></script>
     <script src="../js/metier.js"></script>
     <script>

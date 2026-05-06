@@ -1,0 +1,199 @@
+/* ============================================================
+   theme.css — SmartFood Dark / Light Mode System
+   ============================================================
+   Toggle via  data-theme="dark"  on <html>.
+   Persist with localStorage in theme-toggle.js.
+   ============================================================ */
+
+/* ---------- LIGHT PALETTE (default) ---------- */
+:root {
+    --theme-bg:            #F4F7F6;
+    --theme-bg-alt:        #eef2f0;
+    --theme-surface:       #FFFFFF;
+    --theme-surface-hover: #f9fbfa;
+    --theme-text:          #333333;
+    --theme-text-secondary:#666666;
+    --theme-text-muted:    #888888;
+    --theme-text-faint:    #aaaaaa;
+    --theme-border:        #E0E0E0;
+    --theme-border-light:  rgba(0,0,0,0.04);
+    --theme-input-bg:      #FFFFFF;
+    --theme-input-border:  #E0E0E0;
+    --theme-card-shadow:   0 2px 12px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.04);
+    --theme-card-shadow-hover: 0 4px 20px rgba(0,0,0,0.08), 0 12px 32px rgba(45,106,79,0.06);
+
+    /* Accents — unchanged across themes */
+    --theme-green:         #2D6A4F;
+    --theme-green-glow:    rgba(45,106,79,0.15);
+    --theme-orange:        #FF8C00;
+    --theme-orange-glow:   rgba(255,140,0,0.25);
+
+    /* Table */
+    --theme-th-color:      #888888;
+    --theme-td-border:     #F4F7F6;
+    --theme-total-bg:      #fcfcfc;
+    --theme-row-hover:     rgba(45,106,79,0.03);
+
+    /* Alerts */
+    --theme-success-bg:    #E9F5EF;
+    --theme-success-border:#2D6A4F;
+    --theme-error-bg:      #FFEBEE;
+    --theme-error-color:   #c0392b;
+    --theme-error-border:  #e74c3c;
+
+    /* Badges */
+    --theme-badge-bg:      #FFF3E0;
+    --theme-date-badge-bg: #E9F5EF;
+
+    /* Glass (front office cards) */
+    --theme-glass-bg:      rgba(255,255,255,0.7);
+    --theme-glass-border:  rgba(255,255,255,0.4);
+
+    /* Misc */
+    --theme-code-bg:       rgba(0,0,0,0.04);
+    --theme-scrollbar:     rgba(0,0,0,0.12);
+    --theme-overlay:       rgba(5,14,9,0.65);
+
+    /* Sidebar (stays dark in both modes — just fine-tune borders) */
+    --theme-sidebar-border: rgba(45,106,79,0.18);
+}
+
+/* ---------- DARK PALETTE ---------- */
+[data-theme="dark"] {
+    --theme-bg:            #0f1419;
+    --theme-bg-alt:        #151c24;
+    --theme-surface:       #1a2332;
+    --theme-surface-hover: #1f2b3d;
+    --theme-text:          #e4e8ec;
+    --theme-text-secondary:#8b95a5;
+    --theme-text-muted:    #6b7a8d;
+    --theme-text-faint:    #4a5568;
+    --theme-border:        #2a3544;
+    --theme-border-light:  rgba(255,255,255,0.06);
+    --theme-input-bg:      #1e2a3a;
+    --theme-input-border:  #2a3544;
+    --theme-card-shadow:   0 2px 12px rgba(0,0,0,0.2), 0 8px 24px rgba(0,0,0,0.15);
+    --theme-card-shadow-hover: 0 4px 20px rgba(0,0,0,0.3), 0 12px 32px rgba(45,106,79,0.12);
+
+    --theme-green:         #3d8b6a;
+    --theme-green-glow:    rgba(61,139,106,0.2);
+    --theme-orange:        #FF8C00;
+    --theme-orange-glow:   rgba(255,140,0,0.3);
+
+    --theme-th-color:      #6b7a8d;
+    --theme-td-border:     #1e2a3a;
+    --theme-total-bg:      #151c24;
+    --theme-row-hover:     rgba(45,106,79,0.08);
+
+    --theme-success-bg:    rgba(45,106,79,0.15);
+    --theme-success-border:#3d8b6a;
+    --theme-error-bg:      rgba(231,76,60,0.12);
+    --theme-error-color:   #ff6b6b;
+    --theme-error-border:  #e74c3c;
+
+    --theme-badge-bg:      rgba(255,140,0,0.15);
+    --theme-date-badge-bg: rgba(45,106,79,0.15);
+
+    --theme-glass-bg:      rgba(26,35,50,0.85);
+    --theme-glass-border:  rgba(255,255,255,0.08);
+
+    --theme-code-bg:       rgba(255,255,255,0.06);
+    --theme-scrollbar:     rgba(255,255,255,0.1);
+    --theme-overlay:       rgba(0,0,0,0.75);
+
+    --theme-sidebar-border: rgba(45,106,79,0.25);
+}
+
+/* ---------- GLOBAL TRANSITION ON THEME CHANGE ---------- */
+html.theme-transition,
+html.theme-transition *,
+html.theme-transition *::before,
+html.theme-transition *::after {
+    transition: background-color 0.35s ease,
+                color 0.35s ease,
+                border-color 0.35s ease,
+                box-shadow 0.35s ease,
+                fill 0.35s ease !important;
+}
+
+/* ============================================================
+   THEME TOGGLE BUTTON  —  Premium Pill Design
+   ============================================================ */
+
+.theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 1.15rem;
+    line-height: 1;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.7);
+    border: 1px solid rgba(255,255,255,0.1);
+    flex-shrink: 0;
+}
+
+.theme-toggle:hover {
+    background: rgba(255,255,255,0.14);
+    color: #fff;
+    border-color: rgba(255,255,255,0.2);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+
+.theme-toggle:active {
+    transform: translateY(0) scale(0.95);
+}
+
+/* Icons container */
+.theme-toggle .toggle-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1),
+                opacity 0.25s ease;
+}
+
+/* Sun icon — shown in dark mode (click to go light) */
+.theme-toggle .icon-sun {
+    position: absolute;
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.5);
+}
+
+/* Moon icon — shown in light mode (click to go dark) */
+.theme-toggle .icon-moon {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+}
+
+/* When dark mode is active, flip icons */
+[data-theme="dark"] .theme-toggle .icon-sun {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+}
+
+[data-theme="dark"] .theme-toggle .icon-moon {
+    opacity: 0;
+    transform: rotate(90deg) scale(0.5);
+}
+
+/* Sidebar variant (backoffice) — slightly different sizing */
+.sidebar .theme-toggle {
+    width: 38px;
+    height: 38px;
+    font-size: 1.05rem;
+    border-radius: 10px;
+}
+
+/* Front Office navbar variant — translucent on dark navbar */
+.front-navbar .theme-toggle {
+    margin-right: 8px;
+}
