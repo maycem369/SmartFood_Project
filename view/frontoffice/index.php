@@ -25,20 +25,47 @@ $ingredients = $ctrl->listIngredients();
         <div class="blob blob-2"></div>
     </div>
 
-    <div class="dashboard-container">
-        <!-- Sidebar du Front Office -->
-        <nav class="sidebar">
+    <!-- Top Navbar du Front Office -->
+    <nav class="front-navbar">
+        <div class="navbar-brand">
+            <div class="logo-mark">
+                <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                    <circle cx="14" cy="14" r="13" stroke="#2D6A4F" stroke-width="2" fill="rgba(45,106,79,0.15)"/>
+                    <path d="M8 14 Q14 6 20 14 Q14 22 8 14Z" fill="#2D6A4F" opacity="0.8"/>
+                    <circle cx="14" cy="14" r="3" fill="#FF8C00"/>
+                </svg>
+            </div>
             <div class="logo">Smart<span>Food</span></div>
-            <ul class="nav-links">
-                <li><a href="#">Tableau de bord</a></li>
-                <li><a href="#">Gestion Recettes</a></li>
-                <li class="active"><a href="index.php">Gestion Calories</a></li>
-                <li><a href="#">Paramètres</a></li>
-                
-                <li class="switch-mode"><a href="../backoffice/index.php" class="admin-link">⚙️ Accès Back Office</a></li>
-            </ul>
-        </nav>
+        </div>
 
+        <ul class="nav-links">
+            <li><a href="#">
+                <span class="nav-icon">&#9783;</span>
+                <span class="nav-label">Tableau de bord</span>
+            </a></li>
+            <li><a href="#">
+                <span class="nav-icon">&#127859;</span>
+                <span class="nav-label">Recettes</span>
+            </a></li>
+            <li class="active"><a href="index.php">
+                <span class="nav-icon">&#128200;</span>
+                <span class="nav-label">Calories</span>
+                <span class="nav-active-dot"></span>
+            </a></li>
+            <li><a href="#">
+                <span class="nav-icon">&#9881;</span>
+                <span class="nav-label">Param&egrave;tres</span>
+            </a></li>
+        </ul>
+
+        <div class="navbar-actions">
+            <a href="../backoffice/index.php" class="btn-admin-link">
+                <span>&#9881;</span> Back Office
+            </a>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
         <main class="main-content">
             <header class="content-header">
                 <h1>Dashboard <span>Nutrition</span></h1>
@@ -258,6 +285,42 @@ $ingredients = $ctrl->listIngredients();
                     </div>
                 </section>
 
+                <!-- Section Gamification: 7-Day Streak -->
+                <section class="card bento-item-streak">
+                    <div class="section-header">
+                        <h3>🔥 Ma Semaine</h3>
+                        <span class="badge-status">Objectif: 7 Jours</span>
+                    </div>
+                    <div class="streak-container">
+                        <div class="streak-days">
+                            <!-- JS will generate days here -->
+                        </div>
+                        <div class="streak-message">
+                            Mangez sainement aujourd'hui pour garder votre série !
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Section Hydratation -->
+                <section class="card bento-item-water">
+                    <div class="section-header">
+                        <h3>💧 Hydratation</h3>
+                    </div>
+                    <div class="water-tracker-container">
+                        <div class="water-glass-wrapper">
+                            <div class="water-fill" id="water-fill-level"></div>
+                        </div>
+                        <div class="water-info">
+                            <div class="water-text"><span id="water-current">0</span> ml</div>
+                            <div class="water-goal">Objectif: 2500 ml</div>
+                            <div class="water-actions">
+                                <button type="button" class="btn-water" onclick="addWater(250)">+ 250ml</button>
+                                <button type="button" class="btn-water" onclick="addWater(500)">+ 500ml</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
             </div> <!-- End bento-grid -->
         </main>
     </div>
@@ -369,6 +432,106 @@ $ingredients = $ctrl->listIngredients();
         function removeEntry(index) { journal.splice(index, 1); renderJournal(); }
         var today = new Date(); var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
         document.getElementById('today-date').textContent = today.toLocaleDateString('fr-FR', options);
+
+        // === Water Tracker ===
+        var waterIntake = 0;
+        var waterGoal = 2500;
+        function addWater(amount) {
+            waterIntake += amount;
+            var displayIntake = waterIntake;
+            
+            // If they exceed the goal, we cap the fill percentage at 100% so it doesn't break the glass UI
+            var percentage = (waterIntake / waterGoal) * 100;
+            if (percentage > 100) percentage = 100;
+            
+            // Update Text
+            document.getElementById('water-current').textContent = displayIntake;
+            
+            // Update Fill Animation
+            document.getElementById('water-fill-level').style.height = percentage + '%';
+        }
+
+        // === Gamification: 7-Day Streak ===
+        function initStreakCalendar() {
+            var daysContainer = document.querySelector('.streak-days');
+            if (!daysContainer) return;
+            
+            var dayNames = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
+            var todayIndex = new Date().getDay();
+            
+            var html = '';
+            // Generate the last 7 days (ending today)
+            for (var i = 6; i >= 0; i--) {
+                var d = new Date();
+                d.setDate(d.getDate() - i);
+                var isToday = (i === 0);
+                
+                // Mock some past data for visual effect (randomly completed)
+                var stateClass = '';
+                var icon = '–';
+                
+                if (isToday) {
+                    stateClass = 'today';
+                } else {
+                    // Random past days for visual appeal
+                    var rand = Math.random();
+                    if (rand > 0.6) {
+                        stateClass = 'completed';
+                        icon = '✓';
+                    } else if (rand > 0.3) {
+                        stateClass = 'fire';
+                        icon = '🔥';
+                    }
+                }
+                
+                html += '<div class="streak-day ' + stateClass + '" id="streak-day-' + i + '">' +
+                        '<span class="streak-day-name">' + dayNames[d.getDay()] + '</span>' +
+                        '<div class="streak-circle" id="streak-circle-' + i + '">' + icon + '</div>' +
+                        '</div>';
+            }
+            daysContainer.innerHTML = html;
+        }
+        
+        function updateTodayStreak() {
+            var circle = document.getElementById('streak-circle-0');
+            var dayContainer = document.getElementById('streak-day-0');
+            if (!circle || !dayContainer) return;
+            
+            if (journal.length > 0) {
+                // If they've logged at least one meal, it's completed (green check)
+                dayContainer.classList.add('completed');
+                dayContainer.classList.remove('fire', 'over-limit');
+                circle.textContent = '✓';
+                
+                if (userGoals.cals > 0) {
+                    if (currentTotals.cals > (userGoals.cals * 1.1)) {
+                        // Exceeded limit significantly (> 110%)
+                        dayContainer.classList.add('over-limit');
+                        dayContainer.classList.remove('completed', 'fire');
+                        circle.textContent = '⚠️';
+                    } else if (currentTotals.cals >= (userGoals.cals * 0.9)) {
+                        // Perfect goal hit (90% - 110%)
+                        dayContainer.classList.add('fire');
+                        dayContainer.classList.remove('completed', 'over-limit');
+                        circle.textContent = '🔥';
+                    }
+                }
+            } else {
+                dayContainer.classList.remove('completed', 'fire', 'over-limit');
+                circle.textContent = '–';
+            }
+        }
+        
+        // Call init on load
+        initStreakCalendar();
+        
+        // Hook updateTodayStreak into renderJournal
+        var originalRenderJournal = renderJournal;
+        renderJournal = function() {
+            originalRenderJournal();
+            updateTodayStreak();
+        };
+
     </script>
 
 </body>

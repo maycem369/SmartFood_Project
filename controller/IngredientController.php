@@ -209,5 +209,32 @@ switch ($action) {
             }
         }
         break;
+
+    case 'export_csv':
+        // Stream all ingredients as a downloadable CSV file
+        $ingredients = $controller->listIngredients();
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename="smartfood_ingredients_' . date('Y-m-d') . '.csv"');
+        header('Pragma: no-cache');
+        header('Expires: 0');
+
+        $out = fopen('php://output', 'w');
+        // UTF-8 BOM for Excel compatibility
+        fputs($out, "\xEF\xBB\xBF");
+        // Header row
+        fputcsv($out, ['ID', 'Nom', 'Calories (kcal/100g)', 'Proteines (g/100g)', 'Glucides (g/100g)', 'Lipides (g/100g)'], ';');
+        // Data rows
+        foreach ($ingredients as $ing) {
+            fputcsv($out, [
+                $ing['idIngredient'],
+                $ing['nom'],
+                $ing['calories'],
+                $ing['proteines'],
+                $ing['glucides'],
+                $ing['lipides']
+            ], ';');
+        }
+        fclose($out);
+        exit;
 }
 ?>

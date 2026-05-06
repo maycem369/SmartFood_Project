@@ -30,9 +30,9 @@ unset($_SESSION['nutrition_errors']); // Nettoyer après lecture
 </head>
 <body class="admin-body">
 
-    <div class="admin-layout">
-        <!-- Top Navbar du Back Office -->
-        <nav class="admin-navbar">
+    <div class="dashboard-container">
+        <!-- Sidebar du Back Office -->
+        <nav class="sidebar">
             <div class="logo">Smart<span>Food</span> <small>Admin</small></div>
             <ul class="nav-links">
                 <li><a href="../frontoffice/index.php">⬅️ Retour au Front Office</a></li>
