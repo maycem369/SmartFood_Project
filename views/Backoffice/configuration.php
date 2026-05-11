@@ -85,11 +85,8 @@
         <li><a href="index.php?action=users_list">
             <i class="fas fa-user-shield"></i> <span data-i18n="admin_nav_users">Utilisateurs</span>
         </a></li>
-        <li><a href="#">
+        <li><a href="index.php?action=recettes_admin">
             <i class="fas fa-scroll"></i> <span data-i18n="admin_nav_recipes">Recettes & Menus</span>
-        </a></li>
-        <li><a href="#">
-            <i class="fas fa-database"></i> <span data-i18n="admin_nav_ingredients">Ingrédients</span>
         </a></li>
         <li><a href="index.php?action=admin_configuration" class="active">
             <i class="fas fa-cog"></i> <span data-i18n="admin_nav_config">Configuration</span>

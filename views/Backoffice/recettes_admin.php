@@ -1,14 +1,26 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
     <script src="assets/js/settings.js"></script>
     <meta charset="UTF-8">
-    <title>Ajouter utilisateur - SmartFood</title>
+    <title>Recettes & Menus – SmartFood Admin</title>
     <link rel="stylesheet" href="assets/css/style.css">
-    <script src="assets/js/settings.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body { background-color: #f0f4f3; }
+        .main-content { margin-left: var(--sidebar-w); padding: 0; height: 100vh; display: flex; flex-direction: column; }
+        .sidebar { width: var(--sidebar-w); }
+        #recette-frame {
+            flex: 1;
+            width: 100%;
+            border: none;
+            height: calc(100vh);
+        }
+    </style>
 </head>
 <body>
+
+<!-- Sidebar Admin identique aux autres pages -->
 <div class="sidebar admin-sidebar">
     <div class="logo">
         <h1 style="color:white;">Smart<span>Food</span></h1>
@@ -17,10 +29,10 @@
         <li><a href="index.php?action=admin_dashboard">
             <i class="fas fa-chart-line"></i> <span data-i18n="admin_nav_dashboard">Vue d'ensemble</span>
         </a></li>
-        <li><a href="index.php?action=users_list" class="active">
+        <li><a href="index.php?action=users_list">
             <i class="fas fa-user-shield"></i> <span data-i18n="admin_nav_users">Utilisateurs</span>
         </a></li>
-        <li><a href="index.php?action=recettes_admin">
+        <li><a href="index.php?action=recettes_admin" class="active">
             <i class="fas fa-scroll"></i> <span data-i18n="admin_nav_recipes">Recettes & Menus</span>
         </a></li>
         <li><a href="index.php?action=admin_configuration">
@@ -33,33 +45,11 @@
         </a>
     </div>
 </div>
+
+<!-- Contenu : iframe vers le backoffice recette existant -->
 <div class="main-content">
-    <h1 class="page-title">Ajouter un utilisateur</h1>
-    <?php if(isset($_SESSION['error'])): ?>
-        <div class="message error"><?= $_SESSION['error']; unset($_SESSION['error']); ?></div>
-    <?php endif; ?>
-    <div class="section-card">
-        <form method="POST" action="index.php?action=add_user">
-            <div class="two-columns">
-                <div class="form-group"><label>PrÃ©nom</label><input type="text" name="prenom"></div>
-                <div class="form-group"><label>Nom</label><input type="text" name="nom"></div>
-            </div>
-            <div class="form-group"><label>Email</label><input type="email" name="email"></div>
-            <div class="form-group"><label>Mot de passe</label><input type="password" name="password"></div>
-            <div class="form-group"><label>RÃ´le</label><select name="role"><option value="user">Utilisateur</option><option value="admin">Administrateur</option></select></div>
-            <button type="submit" class="btn btn-green">Ajouter</button>
-        </form>
-    </div>
+    <iframe id="recette-frame" src="recette/views/backoffice.php"></iframe>
 </div>
+
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-

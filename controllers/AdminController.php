@@ -28,39 +28,33 @@ class AdminController {
     }
 
     private function getTotalRecettes(): int {
-        $stmt = $this->db->query("SELECT COUNT(*) as total FROM recette");
-        return (int) $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+        try {
+            $stmt = $this->db->query("SELECT COUNT(*) as total FROM recette");
+            return (int) $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+        } catch (Exception $e) {
+            return 0;
+        }
     }
 
     private function getTotalIngredients(): int {
-        return 320; // valeur exemple — remplacer par une vraie requête si nécessaire
+        try {
+            $stmt = $this->db->query("SELECT COUNT(*) as total FROM ingredient");
+            return (int) $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+        } catch (Exception $e) {
+            return 0;
+        }
     }
 
     private function getTotalSuggestionsIA(): int {
-        return 1200; // valeur exemple
+        return 0;
     }
 
     private function getRecettesParMois(): array {
-        $query = "SELECT DATE_FORMAT(date_creation, '%Y-%m') as mois, COUNT(*) as nombre
-                  FROM recette
-                  WHERE date_creation >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
-                  GROUP BY mois
-                  ORDER BY mois ASC";
-        $stmt = $this->db->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return [];
     }
 
     private function getCaloriesMoyennesParMois(): array {
-        $query = "SELECT DATE_FORMAT(date_creation, '%Y-%m') as mois,
-                         AVG(caloriesTotales) as moyenne_calories
-                  FROM recette
-                  WHERE date_creation >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
-                  GROUP BY mois
-                  ORDER BY mois ASC";
-        $stmt = $this->db->prepare($query);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return [];
     }
 
     private function getDerniersUtilisateurs(int $limit = 5): array {
@@ -75,16 +69,15 @@ class AdminController {
     }
 
     private function getDernieresRecettes(int $limit = 5): array {
-        $query = "SELECT r.idRecette, r.nom, r.caloriesTotales, r.date_creation,
-                         u.nom as auteur_nom, u.prenom as auteur_prenom
-                  FROM recette r
-                  LEFT JOIN utilisateur u ON r.id_user = u.idUser
-                  ORDER BY r.date_creation DESC
-                  LIMIT :limit";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        try {
+            $query = "SELECT idrecette, nom, status, categorie FROM recette ORDER BY idrecette DESC LIMIT :limit";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            return [];
+        }
     }
 
     private function getGoalDistribution(): array {
@@ -94,11 +87,15 @@ class AdminController {
     }
 
     private function getRecentActivities(int $limit = 10): array {
-        $query = "SELECT * FROM activity_log ORDER BY created_at DESC LIMIT :limit";
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        try {
+            $query = "SELECT * FROM activity_log ORDER BY created_at DESC LIMIT :limit";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            return [];
+        }
     }
 
     // =========================================================================

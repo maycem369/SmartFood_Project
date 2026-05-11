@@ -133,6 +133,19 @@ switch ($action) {
         $faceIdController->status();
         break;
 
+    // ── Recettes (Front & Back) ───────────────────────────
+    case 'recettes_front':
+        if (!isset($_SESSION['user_id'])) { header("Location: index.php?action=login"); exit(); }
+        include 'views/Frontoffice/recettes_front.php';
+        break;
+
+    case 'recettes_admin':
+        if (!isset($_SESSION['user_id']) || ($_SESSION['user_role'] ?? '') !== 'admin') {
+            header("Location: index.php?action=login"); exit();
+        }
+        include 'views/Backoffice/recettes_admin.php';
+        break;
+
     // ── Back Office ───────────────────────────────────────
     case 'admin_dashboard':
         $adminController->dashboard();
