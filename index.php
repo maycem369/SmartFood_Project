@@ -146,6 +146,18 @@ switch ($action) {
         include 'views/Backoffice/recettes_admin.php';
         break;
 
+    case 'nutrition_admin':
+        if (!isset($_SESSION['user_id']) || ($_SESSION['user_role'] ?? '') !== 'admin') {
+            header("Location: index.php?action=login"); exit();
+        }
+        include 'views/Backoffice/nutrition_admin.php';
+        break;
+
+    case 'nutrition_front':
+        if (!isset($_SESSION['user_id'])) { header("Location: index.php?action=login"); exit(); }
+        include 'views/Frontoffice/nutrition_front.php';
+        break;
+
     // ── Back Office ───────────────────────────────────────
     case 'admin_dashboard':
         $adminController->dashboard();
@@ -162,7 +174,7 @@ switch ($action) {
         $adminController->editUser();
         break;
     case 'update_user':
-        $userController->updateUser();
+        $userController->updateUser_admin();
         break;
     case 'user_details':
         $adminController->userDetails();

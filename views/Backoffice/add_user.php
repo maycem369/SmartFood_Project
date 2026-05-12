@@ -1,11 +1,10 @@
 ﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
-    <script src="assets/js/settings.js"></script>
     <meta charset="UTF-8">
+    <script src="assets/js/settings.js"></script>
     <title>Ajouter utilisateur - SmartFood</title>
     <link rel="stylesheet" href="assets/css/style.css">
-    <script src="assets/js/settings.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
@@ -21,7 +20,10 @@
             <i class="fas fa-user-shield"></i> <span data-i18n="admin_nav_users">Utilisateurs</span>
         </a></li>
         <li><a href="index.php?action=recettes_admin">
-            <i class="fas fa-scroll"></i> <span data-i18n="admin_nav_recipes">Recettes & Menus</span>
+            <i class="fas fa-scroll"></i> <span data-i18n="admin_nav_recipes">Recettes &amp; Menus</span>
+        </a></li>
+        <li><a href="index.php?action=nutrition_admin">
+            <i class="fas fa-apple-alt"></i> <span data-i18n="admin_nav_nutrition">Nutrition</span>
         </a></li>
         <li><a href="index.php?action=admin_configuration">
             <i class="fas fa-cog"></i> <span data-i18n="admin_nav_config">Configuration</span>
@@ -34,20 +36,38 @@
     </div>
 </div>
 <div class="main-content">
-    <h1 class="page-title">Ajouter un utilisateur</h1>
+    <h1 class="page-title" data-i18n="add_user_title">Ajouter un utilisateur</h1>
     <?php if(isset($_SESSION['error'])): ?>
         <div class="message error"><?= $_SESSION['error']; unset($_SESSION['error']); ?></div>
     <?php endif; ?>
     <div class="section-card">
         <form method="POST" action="index.php?action=add_user">
             <div class="two-columns">
-                <div class="form-group"><label>PrÃ©nom</label><input type="text" name="prenom"></div>
-                <div class="form-group"><label>Nom</label><input type="text" name="nom"></div>
+                <div class="form-group">
+                    <label data-i18n="edit_firstname">Prénom</label>
+                    <input type="text" name="prenom">
+                </div>
+                <div class="form-group">
+                    <label data-i18n="edit_name">Nom</label>
+                    <input type="text" name="nom">
+                </div>
             </div>
-            <div class="form-group"><label>Email</label><input type="email" name="email"></div>
-            <div class="form-group"><label>Mot de passe</label><input type="password" name="password"></div>
-            <div class="form-group"><label>RÃ´le</label><select name="role"><option value="user">Utilisateur</option><option value="admin">Administrateur</option></select></div>
-            <button type="submit" class="btn btn-green">Ajouter</button>
+            <div class="form-group">
+                <label data-i18n="edit_email">Email</label>
+                <input type="email" name="email">
+            </div>
+            <div class="form-group">
+                <label data-i18n="user_password">Mot de passe</label>
+                <input type="password" name="password">
+            </div>
+            <div class="form-group">
+                <label data-i18n="user_role">Rôle</label>
+                <select name="role">
+                    <option value="user" data-i18n="role_user">Utilisateur</option>
+                    <option value="admin" data-i18n="admin_role">Administrateur</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-green" data-i18n="add_user">Ajouter</button>
         </form>
     </div>
 </div>

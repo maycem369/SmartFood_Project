@@ -11,8 +11,7 @@ class IngredientController {
 
     public function add($nom) {
         $db = RecetteDatabase::connect();
-        // quantite a une valeur par défaut dans la table
-        $db->prepare("INSERT INTO ingredient (nom, quantite) VALUES (?, 0)")->execute([$nom]);
+        $db->prepare("INSERT INTO ingredient (nom) VALUES (?)")->execute([$nom]);
     }
 
     public function getAll() {

@@ -88,6 +88,9 @@
         <li><a href="index.php?action=recettes_admin">
             <i class="fas fa-scroll"></i> <span data-i18n="admin_nav_recipes">Recettes & Menus</span>
         </a></li>
+        <li><a href="index.php?action=nutrition_admin">
+            <i class="fas fa-apple-alt"></i> <span data-i18n="admin_nav_nutrition">Nutrition</span>
+        </a></li>
         <li><a href="index.php?action=admin_configuration" class="active">
             <i class="fas fa-cog"></i> <span data-i18n="admin_nav_config">Configuration</span>
         </a></li>

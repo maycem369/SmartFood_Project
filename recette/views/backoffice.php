@@ -32,6 +32,7 @@ $filtered = array_filter($recettes, function($r) use ($filterCat, $filterStatus,
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+    <script src="../../assets/js/settings.js"></script>
     <meta charset="UTF-8">
     <title>SmartFood – Gestion des Recettes</title>
     <link rel="stylesheet" href="../assets/style.css">
@@ -59,33 +60,50 @@ $filtered = array_filter($recettes, function($r) use ($filterCat, $filterStatus,
         .table-photo-placeholder { width: 50px; height: 50px; border-radius: 8px; background: var(--green-tint); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; }
         .filter-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-bottom: 20px; }
         .filter-row input, .filter-row select { max-width: 200px; padding: 10px 14px; font-size: .85rem; }
+
+        /* ── Dark Mode ── */
+        [data-theme="dark"] body { background: #0f1a16; color: #e8f0ec; }
+        [data-theme="dark"] .card, [data-theme="dark"] .section-card { background: #1a2b23; border-color: #2a3d34; }
+        [data-theme="dark"] .stat-card { background: #1a2b23; border-color: #2a3d34; color: #e8f0ec; }
+        [data-theme="dark"] .stat-card h3 { color: #8ca99a; }
+        [data-theme="dark"] .nutrition-header h1, [data-theme="dark"] .nutrition-header p { color: #e8f0ec; }
+        [data-theme="dark"] input, [data-theme="dark"] select, [data-theme="dark"] textarea { background: #111d18; color: #e8f0ec; border-color: #2a3d34; }
+        [data-theme="dark"] .smart-table th { background: #111d18; color: #8ca99a; }
+        [data-theme="dark"] .smart-table td { color: #e8f0ec; border-color: #2a3d34; }
+        [data-theme="dark"] .smart-table tr:hover td { background: #1a2b23; }
+        [data-theme="dark"] .ingredient-chip { background: #1a2b23; color: #e8f0ec; border-color: #2a3d34; }
+        [data-theme="dark"] .ing-pill { background: #1f3a2a; color: #74c69d; }
+        [data-theme="dark"] .modal-content { background: #1a2b23; color: #e8f0ec; }
+        [data-theme="dark"] .table-header { color: #e8f0ec; }
+        [data-theme="dark"] label { color: #8ca99a; }
+        [data-theme="dark"] b, [data-theme="dark"] strong { color: #e8f0ec; }
+        [data-theme="dark"] .badge-total { background: #1f3a2a; color: #74c69d; }
+        [data-theme="dark"] .photo-placeholder { background: #111d18; border-color: #2a3d34; }
     </style>
 </head>
 <body>
 
         <div class="nutrition-header">
-            <h1>🍽️ Gestion des Recettes</h1>
-            <p>Ajoutez, modifiez ou supprimez les recettes de la plateforme.</p>
+            <h1 data-i18n="rec_title">🍽️ Gestion des Recettes</h1>
+            <p data-i18n="rec_subtitle">Ajoutez, modifiez ou supprimez les recettes de la plateforme.</p>
         </div>
 
         <!-- ── STAT CARDS ── -->
         <div class="stats-grid" style="margin-bottom:30px;">
             <div class="stat-card">
-                <h3>Total Recettes</h3>
-                <div class="stat-number"><?= count($recettes) ?></div>
-                <div class="stat-label">dans la base</div>
+                <h3 data-i18n="rec_stat_validated">Validées</h3>
+                <div class="stat-number"><?= count(array_filter($recettes, fn($r) => trim($r['status']) === 'Validée')) ?></div>
+                <div class="stat-label" data-i18n="rec_stat_active">recettes actives</div>
             </div>
             <div class="stat-card">
-                <h3>Total Ingrédients</h3>
+                <h3 data-i18n="rec_stat_total_ing">Total Ingrédients</h3>
                 <div class="stat-number"><?= count($ingredients) ?></div>
-                <div class="stat-label">disponibles</div>
+                <div class="stat-label" data-i18n="rec_stat_available">disponibles</div>
             </div>
             <div class="stat-card">
-                <h3>Validées</h3>
-                <div class="stat-number">
-                    <?= count(array_filter($recettes, fn($r) => trim($r['status']) === 'Validée')) ?>
-                </div>
-                <div class="stat-label">recettes actives</div>
+                <h3 data-i18n="rec_stat_total">Total Recettes</h3>
+                <div class="stat-number"><?= count($recettes) ?></div>
+                <div class="stat-label" data-i18n="rec_stat_indb">dans la base</div>
             </div>
         </div>
 
@@ -94,21 +112,21 @@ $filtered = array_filter($recettes, function($r) use ($filterCat, $filterStatus,
 
             <!-- ADD RECETTE -->
             <div class="card">
-                <h3>➕ Ajouter une Recette</h3>
+                <h3 data-i18n="rec_add_title">➕ Ajouter une Recette</h3>
                 <form method="POST" enctype="multipart/form-data">
 
                     <div class="form-group">
-                        <label>Nom</label>
+                        <label data-i18n="rec_col_nom">Nom</label>
                         <input type="text" name="nom" placeholder="Nom de la recette">
                     </div>
 
                     <div class="form-group">
-                        <label>Description</label>
+                        <label data-i18n="rec_desc_label">Description</label>
                         <textarea name="description" rows="2" placeholder="Description..."></textarea>
                     </div>
 
                     <div class="form-group">
-                        <label>Catégorie</label>
+                        <label data-i18n="rec_col_cat">Catégorie</label>
                         <select name="categorie">
                             <?php foreach($categories as $cat): ?>
                             <option value="<?= $cat ?>"><?= $catIcons[$cat] ?? '' ?> <?= $cat ?></option>
@@ -117,10 +135,10 @@ $filtered = array_filter($recettes, function($r) use ($filterCat, $filterStatus,
                     </div>
 
                     <div class="form-group">
-                        <label>Photo</label>
+                        <label data-i18n="rec_photo_label">Photo</label>
                         <label class="photo-placeholder" for="photoAdd">
                             <span style="font-size:1.8rem;">📸</span>
-                            <span>Cliquez pour ajouter une photo</span>
+                            <span data-i18n="rec_photo_click">Cliquez pour ajouter une photo</span>
                             <span style="font-size:.75rem;color:#aaa;">JPG, PNG, WEBP</span>
                         </label>
                         <input type="file" name="photo" id="photoAdd" accept="image/*" style="display:none;"
@@ -129,7 +147,7 @@ $filtered = array_filter($recettes, function($r) use ($filterCat, $filterStatus,
                     </div>
 
                     <div class="form-group">
-                        <label>Ingrédients</label>
+                        <label data-i18n="rec_col_ing">Ingrédients</label>
                         <div class="ingredient-grid">
                             <?php foreach($ingredients as $i): ?>
                             <label class="ingredient-chip">
@@ -140,7 +158,7 @@ $filtered = array_filter($recettes, function($r) use ($filterCat, $filterStatus,
                         </div>
                     </div>
 
-                    <button class="btn btn-secondary btn-full" name="add" style="margin-top:8px;">
+                    <button class="btn btn-secondary btn-full" name="add" style="margin-top:8px;" data-i18n="rec_btn_add_recipe">
                         ➕ Ajouter la recette
                     </button>
                 </form>
@@ -148,20 +166,20 @@ $filtered = array_filter($recettes, function($r) use ($filterCat, $filterStatus,
 
             <!-- ADD INGREDIENT -->
             <div class="card">
-                <h3>🥦 Ajouter un Ingrédient</h3>
+                <h3 data-i18n="rec_add_ing_title">🥦 Ajouter un Ingrédient</h3>
                 <form method="POST">
                     <div class="form-group">
-                        <label>Nom de l'ingrédient</label>
+                        <label data-i18n="rec_ing_name_label">Nom de l'ingrédient</label>
                         <input type="text" name="nomIngredient" placeholder="Ex: Tomate, Poulet...">
                     </div>
-                    <button class="btn btn-primary btn-full" name="addIngredient" style="margin-top:8px;">
+                    <button class="btn btn-primary btn-full" name="addIngredient" style="margin-top:8px;" data-i18n="rec_btn_add_ing">
                         ➕ Ajouter l'ingrédient
                     </button>
                 </form>
 
                 <div style="margin-top:24px;">
                     <div class="table-header">
-                        <b style="font-size:.85rem;color:#888;text-transform:uppercase;letter-spacing:.04em;">Ingrédients existants</b>
+                        <b style="font-size:.85rem;color:#888;text-transform:uppercase;letter-spacing:.04em;" data-i18n="rec_existing_ing">Ingrédients existants</b>
                         <span class="badge-total"><?= count($ingredients) ?></span>
                     </div>
                     <div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px;">
@@ -178,16 +196,15 @@ $filtered = array_filter($recettes, function($r) use ($filterCat, $filterStatus,
         <!-- ── TABLE RECETTES ── -->
         <div class="section-card">
             <div class="table-header">
-                <h3>📋 Liste des Recettes</h3>
+                <h3 data-i18n="rec_list_title">📋 Liste des Recettes</h3>
                 <span class="badge-total"><?= count($filtered) ?> / <?= count($recettes) ?></span>
             </div>
 
             <!-- Filter row -->
-            <form method="GET" action="index.php" class="filter-row">
-                <input type="hidden" name="action" value="recettes_admin">
+            <form method="GET" action="/smartfoodMVC/recette/views/backoffice.php" class="filter-row">
                 <input type="text" name="q" placeholder="🔍 Rechercher..." value="<?= htmlspecialchars($filterSearch) ?>">
                 <select name="cat">
-                    <option value="">Toutes catégories</option>
+                    <option value="" data-i18n="rec_filter_all_cat">Toutes catégories</option>
                     <?php foreach($categories as $cat): ?>
                     <option value="<?= $cat ?>" <?= $filterCat === $cat ? 'selected' : '' ?>>
                         <?= $catIcons[$cat] ?? '' ?> <?= $cat ?>
@@ -195,24 +212,24 @@ $filtered = array_filter($recettes, function($r) use ($filterCat, $filterStatus,
                     <?php endforeach; ?>
                 </select>
                 <select name="status">
-                    <option value="">Tous statuts</option>
+                    <option value="" data-i18n="rec_filter_all_status">Tous statuts</option>
                     <option value="Validée"     <?= $filterStatus === 'Validée'     ? 'selected' : '' ?>>✅ Validée</option>
                     <option value="Non validée" <?= $filterStatus === 'Non validée' ? 'selected' : '' ?>>⏳ Non validée</option>
                 </select>
-                <button class="btn btn-secondary" type="submit">Filtrer</button>
-                <a href="index.php?action=recettes_admin" class="btn btn-cancel">Reset</a>
+                <button class="btn btn-secondary" type="submit" data-i18n="rec_btn_filter">Filtrer</button>
+                <a href="/smartfoodMVC/recette/views/backoffice.php" class="btn btn-cancel" data-i18n="rec_btn_reset">Reset</a>
             </form>
 
             <table class="smart-table">
                 <thead>
                     <tr>
-                        <th>Photo</th>
-                        <th>ID</th>
-                        <th>Nom</th>
-                        <th>Catégorie</th>
-                        <th>Ingrédients</th>
-                        <th>Statut</th>
-                        <th>Actions</th>
+                        <th data-i18n="rec_col_photo">Photo</th>
+                        <th data-i18n="rec_col_id">ID</th>
+                        <th data-i18n="rec_col_nom">Nom</th>
+                        <th data-i18n="rec_col_cat">Catégorie</th>
+                        <th data-i18n="rec_col_ing">Ingrédients</th>
+                        <th data-i18n="rec_col_status">Statut</th>
+                        <th data-i18n="rec_col_actions">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -245,7 +262,7 @@ $filtered = array_filter($recettes, function($r) use ($filterCat, $filterStatus,
                         </td>
                         <td>
                             <div class="actions">
-                                <button class="btn-sm btn-edit" onclick="openPopup(
+                                <button class="btn-sm btn-edit" data-i18n="rec_btn_edit" onclick="openPopup(
                                     <?= $r['idrecette'] ?>,
                                     `<?= htmlspecialchars($r['nom'], ENT_QUOTES) ?>`,
                                     `<?= htmlspecialchars($r['description'], ENT_QUOTES) ?>`,
@@ -257,13 +274,13 @@ $filtered = array_filter($recettes, function($r) use ($filterCat, $filterStatus,
                                 <?php if(!$isValidee): ?>
                                 <form method="POST" style="display:inline;">
                                     <input type="hidden" name="id" value="<?= $r['idrecette'] ?>">
-                                    <button class="btn-sm btn-view" name="validate">✅ Valider</button>
+                                    <button class="btn-sm btn-view" name="validate" data-i18n="rec_btn_validate">✅ Valider</button>
                                 </form>
                                 <?php endif; ?>
 
                                 <form method="POST" style="display:inline;">
                                     <input type="hidden" name="id" value="<?= $r['idrecette'] ?>">
-                                    <button class="btn-sm btn-delete" name="delete"
+                                    <button class="btn-sm btn-delete" name="delete" data-i18n="rec_btn_delete"
                                         onclick="return confirm('Supprimer « <?= htmlspecialchars($r['nom'], ENT_QUOTES) ?> » ?')">
                                         🗑️ Supprimer
                                     </button>
@@ -420,6 +437,40 @@ function openPopup(id, nom, desc, ing, cat, photo) {
 /* ── Close modal ── */
 function closePopup() { document.getElementById("popup").style.display = "none"; }
 document.getElementById("popup").addEventListener("click", function(e) { if(e.target===this) closePopup(); });
+
+// ── Sync thème et langue depuis localStorage (iframe) ──
+(function() {
+    var theme = localStorage.getItem('sf_theme') || 'light';
+    var lang  = localStorage.getItem('sf_lang')  || 'fr';
+
+    // Appliquer le thème
+    document.documentElement.setAttribute('data-theme', theme);
+
+    // Appliquer la langue
+    function applyLang(l) {
+        if (typeof SmartFoodSettings !== 'undefined' && typeof SmartFoodSettings.applyLanguage === 'function') {
+            SmartFoodSettings.applyLanguage(l);
+        }
+    }
+
+    // Appliquer après chargement complet du DOM
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() { applyLang(lang); });
+    } else {
+        applyLang(lang);
+    }
+
+    // Écouter les changements depuis la page parente
+    window.addEventListener('message', function(e) {
+        if (!e.data) return;
+        if (e.data.type === 'sf_theme') {
+            document.documentElement.setAttribute('data-theme', e.data.value);
+        }
+        if (e.data.type === 'sf_lang') {
+            applyLang(e.data.value);
+        }
+    });
+})();
 </script>
 
 </body>

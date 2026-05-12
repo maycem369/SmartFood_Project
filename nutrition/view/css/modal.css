@@ -1,0 +1,229 @@
+
+/* ============================================================
+   modal.css — CSV Export Button, Quick-View Button & Modal
+   ============================================================ */
+
+/* ---- CSV Export Button ---- */
+.btn-export-csv {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-size: 0.83rem;
+    font-weight: 600;
+    color: #2D6A4F;
+    text-decoration: none;
+    background: rgba(45, 106, 79, 0.08);
+    border: 1px solid rgba(45, 106, 79, 0.22);
+    transition: all 0.25s ease;
+    white-space: nowrap;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+}
+.btn-export-csv:hover {
+    background: #2D6A4F;
+    color: #fff;
+    border-color: #2D6A4F;
+    box-shadow: 0 4px 16px rgba(45, 106, 79, 0.3);
+    transform: translateY(-1px);
+}
+
+/* ---- Quick-View Button (in table) ---- */
+.btn-quickview {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #5B6AF0;
+    background: rgba(91, 106, 240, 0.07);
+    border: 1px solid rgba(91, 106, 240, 0.2);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    font-family: 'Inter', sans-serif;
+}
+.btn-quickview:hover {
+    background: #5B6AF0;
+    color: #fff;
+    border-color: #5B6AF0;
+    box-shadow: 0 4px 14px rgba(91, 106, 240, 0.35);
+    transform: translateY(-1px);
+}
+
+/* ---- Modal Overlay ---- */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: var(--theme-overlay, rgba(5, 14, 9, 0.65));
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.modal-overlay.modal-visible {
+    opacity: 1;
+}
+
+/* ---- Modal Box ---- */
+.modal-box {
+    background: var(--theme-surface, #fff);
+    border-radius: 24px;
+    width: 100%;
+    max-width: 580px;
+    margin: 20px;
+    box-shadow:
+        0 25px 60px rgba(0, 0, 0, 0.22),
+        0 0 0 1px var(--theme-border-light, rgba(0, 0, 0, 0.05));
+    position: relative;
+    overflow: hidden;
+    transform: translateY(24px) scale(0.96);
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.modal-overlay.modal-visible .modal-box {
+    transform: translateY(0) scale(1);
+}
+
+/* ---- Close Button ---- */
+.modal-close {
+    position: absolute;
+    top: 16px; right: 16px;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0, 0, 0, 0.07);
+    color: #666;
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    z-index: 2;
+    line-height: 1;
+}
+.modal-close:hover {
+    background: rgba(0, 0, 0, 0.13);
+    color: #222;
+    transform: rotate(90deg);
+}
+
+/* ---- Modal Header ---- */
+.modal-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 28px 28px 20px;
+    background: linear-gradient(135deg, rgba(45,106,79,0.06) 0%, rgba(255,140,0,0.04) 100%);
+    border-bottom: 1px solid var(--theme-border-light, rgba(0, 0, 0, 0.06));
+}
+.modal-icon {
+    width: 52px; height: 52px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #2D6A4F 0%, #1b4332 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    flex-shrink: 0;
+    box-shadow: 0 6px 18px rgba(45, 106, 79, 0.3);
+}
+.modal-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--theme-text, #1a1a2e);
+    margin: 0 0 4px 0;
+    letter-spacing: -0.3px;
+}
+.modal-subtitle { font-size: 0.82rem; color: var(--theme-text-muted, #999); margin: 0; }
+
+/* ---- Modal Body ---- */
+.modal-body {
+    padding: 24px 28px;
+}
+
+/* Stat pills */
+.modal-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 22px;
+}
+.modal-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    padding: 14px 8px;
+    border-radius: 14px;
+    text-align: center;
+    border: 1px solid transparent;
+    transition: transform 0.2s ease;
+}
+.modal-stat:hover { transform: translateY(-2px); }
+
+.modal-stat-cals { background: linear-gradient(135deg, rgba(239,68,68,.09), rgba(239,68,68,.03)); border-color: rgba(239,68,68,.16); }
+.modal-stat-prot { background: linear-gradient(135deg, rgba(59,130,246,.09), rgba(59,130,246,.03)); border-color: rgba(59,130,246,.16); }
+.modal-stat-gluc { background: linear-gradient(135deg, rgba(245,158,11,.09), rgba(245,158,11,.03)); border-color: rgba(245,158,11,.16); }
+.modal-stat-lip  { background: linear-gradient(135deg, rgba(16,185,129,.09), rgba(16,185,129,.03)); border-color: rgba(16,185,129,.16); }
+
+.modal-stat-icon  { font-size: 1.15rem; }
+.modal-stat-value {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--theme-text, #111);
+    line-height: 1;
+}
+.modal-stat-label { font-size: 0.68rem; color: var(--theme-text-faint, #bbb); font-weight: 600; }
+.modal-stat-name  { font-size: 0.7rem; color: var(--theme-text-muted, #888); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* Doughnut + Legend */
+.modal-chart-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    padding: 6px 0 2px;
+}
+.modal-chart-legend { display: flex; flex-direction: column; gap: 12px; }
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.84rem;
+    color: var(--theme-text-secondary, #555);
+    font-weight: 500;
+}
+.legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 0 0 2px rgba(0,0,0,0.06);
+}
+
+/* ---- Modal Footer ---- */
+.modal-footer {
+    padding: 18px 28px 26px;
+    border-top: 1px solid var(--theme-border-light, rgba(0, 0, 0, 0.06));
+}
+.modal-footer .btn-primary {
+    width: 100%;
+    padding: 13px;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    letter-spacing: 0.01em;
+}
+
+@media (max-width: 480px) {
+    .modal-stats { grid-template-columns: repeat(2, 1fr); }
+    .modal-chart-wrapper { flex-direction: column; gap: 16px; }
+}

@@ -14,7 +14,7 @@
         <li><a href="index.php?action=dashboard_user" data-i18n="nav_dashboard">🏠 Tableau de bord</a></li>
         <li><a href="index.php?action=profil" data-i18n="nav_profile">👤 Mon Profil</a></li>
         <li><a href="#" data-i18n="nav_recipes">📋 Recettes</a></li>
-        <li><a href="#" data-i18n="nav_nutrition">🥗 Nutrition</a></li>
+        <li><a href="index.php?action=nutrition_front" data-i18n="nav_nutrition">🥗 Nutrition</a></li>
         <li><a href="index.php?action=settings" class="active" data-i18n="nav_settings">⚙️ Paramètres</a></li>
     </ul>
     <div class="front-user-menu">

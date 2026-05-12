@@ -87,7 +87,7 @@ $uploadsUrl = 'recette/uploads/recettes/';
         <li><a href="index.php?action=dashboard_user" data-i18n="nav_dashboard">🏠 Tableau de bord</a></li>
         <li><a href="index.php?action=profil" data-i18n="nav_profile">👤 Mon Profil</a></li>
         <li><a href="index.php?action=recettes_front" class="active" data-i18n="nav_recipes">📋 Recettes</a></li>
-        <li><a href="#" data-i18n="nav_nutrition">🥗 Nutrition</a></li>
+        <li><a href="index.php?action=nutrition_front" data-i18n="nav_nutrition">🥗 Nutrition</a></li>
         <li><a href="index.php?action=settings" data-i18n="nav_settings">⚙️ Paramètres</a></li>
     </ul>
     <div class="front-user-menu">
@@ -100,7 +100,7 @@ $uploadsUrl = 'recette/uploads/recettes/';
 <div class="front-main-content">
 
     <div class="header">
-        <h1>📋 Recettes intelligentes</h1>
+        <h1 data-i18n="rec_front_title">📋 Recettes intelligentes</h1>
     </div>
 
     <!-- Filtres catégories -->
@@ -121,8 +121,8 @@ $uploadsUrl = 'recette/uploads/recettes/';
 
     <!-- Formulaire ingrédients -->
     <div class="card" style="margin-bottom:20px;">
-        <h3>🥦 Choisir vos ingrédients</h3>
-        <p style="color:var(--text-muted);font-size:.85rem;margin-bottom:16px;">
+        <h3 data-i18n="rec_choose_ing">🥦 Choisir vos ingrédients</h3>
+        <p style="color:var(--text-muted);font-size:.85rem;margin-bottom:16px;" data-i18n="rec_choose_desc">
             Cochez les ingrédients que vous avez à disposition.
         </p>
         <form method="GET" action="index.php">
@@ -142,8 +142,8 @@ $uploadsUrl = 'recette/uploads/recettes/';
                 <?php endforeach; ?>
             </div>
             <div style="display:flex;gap:10px;flex-wrap:wrap;">
-                <button class="btn btn-secondary" name="search" value="1">🔍 Recherche exacte</button>
-                <button class="btn btn-primary"   name="smart"  value="1">✨ Recherche intelligente</button>
+                <button class="btn btn-secondary" name="search" value="1" data-i18n="rec_search_exact">🔍 Recherche exacte</button>
+                <button class="btn btn-primary"   name="smart"  value="1" data-i18n="rec_search_smart">✨ Recherche intelligente</button>
                 <a href="index.php?action=recettes_front" class="btn btn-cancel">↺ Reset</a>
             </div>
         </form>

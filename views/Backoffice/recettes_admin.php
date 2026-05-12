@@ -35,6 +35,9 @@
         <li><a href="index.php?action=recettes_admin" class="active">
             <i class="fas fa-scroll"></i> <span data-i18n="admin_nav_recipes">Recettes & Menus</span>
         </a></li>
+        <li><a href="index.php?action=nutrition_admin">
+            <i class="fas fa-apple-alt"></i> <span data-i18n="admin_nav_nutrition">Nutrition</span>
+        </a></li>
         <li><a href="index.php?action=admin_configuration">
             <i class="fas fa-cog"></i> <span data-i18n="admin_nav_config">Configuration</span>
         </a></li>
@@ -50,6 +53,26 @@
 <div class="main-content">
     <iframe id="recette-frame" src="recette/views/backoffice.php"></iframe>
 </div>
+
+<script>
+// Synchroniser thème et langue avec l'iframe recette
+function syncIframe() {
+    var frame = document.getElementById('recette-frame');
+    if (!frame || !frame.contentWindow) return;
+    var theme = localStorage.getItem('sf_theme') || 'light';
+    var lang  = localStorage.getItem('sf_lang')  || 'fr';
+    frame.contentWindow.postMessage({ type: 'sf_theme', value: theme }, '*');
+    frame.contentWindow.postMessage({ type: 'sf_lang',  value: lang  }, '*');
+}
+document.getElementById('recette-frame').addEventListener('load', syncIframe);
+
+// Réémettre si le thème/langue change dans la page parente
+var _origSetItem = localStorage.setItem.bind(localStorage);
+localStorage.setItem = function(key, value) {
+    _origSetItem(key, value);
+    if (key === 'sf_theme' || key === 'sf_lang') syncIframe();
+};
+</script>
 
 </body>
 </html>
